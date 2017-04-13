@@ -1,0 +1,105 @@
+<section id='tools'>
+    <ul class='breadcrumb' id='breadcrumb'>
+        <li class='title'>{{title}}</li>
+    </ul>
+    <div id='toolbar'>
+        <div class='btn-group'>
+            <a class='btn' ng-click="reload()" title='Reload'>
+                <i class='icon-refresh'></i> Refresh
+            </a>
+        </div>
+    </div>
+</section>
+<!-- Content -->
+<div id='content'>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">select location</div>
+                <div class="panel-body">
+                    <form>
+                        <div class="form-group">
+                            <label>จังหวัด: </label>
+                            <select class="form-control" ng-model="dat.prov" ng-options="p.prov_code as p.prov_name for p in province" ng-change="getAmp(); getChartProv();" ng-required="true">
+                                <option value=""> </option>
+                            </select>
+                            <label>อำเภอ: </label>
+                            <select class="form-control" ng-model="dat.amp" ng-options="a.amp_code as a.amp_name for a in amphoe" ng-change="getTam(); getChartAmp();" ng-required="true">
+                                <option value=""> </option>
+                            </select>
+                            <label>ตำบล: </label>
+                            <select class="form-control" ng-model="dat.tam" ng-options="t.tam_code as t.tam_name for t in tambon" ng-change="getVill(); getChartTam();" ng-required="true">
+                                <option value=""> </option>
+                            </select>
+                            <label>หมู่บ้าน: </label>
+                            <select class="form-control" ng-model="dat.vill" ng-options="v.vill_code as v.vill_name for v in village" ng-change="getChartVill()" ng-required="true">
+                                <option value=""> </option>
+                            </select>
+                            <!-- 
+                            <div class="form-group">
+                                <label><strong>วันรายงาน:</strong> </label>
+                                <input type="date" class="form-control" ng-model=d at.date_sick ng-required="true" />
+                            </div> -->
+                        </div>
+                        <!-- <button class="btn btn-success" type="submit" ng-click=""><i class="icon-plus-sign icon-white"></i> ตกลง</button><span>  </span>
+                        <button class="btn btn-danger" type="submit" ng-click=""><i class="icon-minus-sign icon-white"></i> ยกเลิก</button> -->
+
+                       <!--  <p>{{dat.prov.length}} {{dat.amp}} {{dat.tam}} {{dat.vill}}</p> -->
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">map</div>
+                <div class="panel-body">
+                    <leaflet lf-center="japan" geojson="geojson" defaults="defaults" width="100%" height="250px"></leaflet>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6" ng-if="dat.prov.length > 0" >
+            <div class="panel panel-default">
+                <div class="panel-heading">{{provName}}</div>
+                <div class="panel-body">
+                    <div>
+                       <ng-echarts class="col-md-12 echarts" ec-config="lineConfig" ec-option="lineOptionP" ></ng-echarts> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" ng-if="dat.amp.length > 0" >
+            <div class="panel panel-default">
+                <div class="panel-heading">{{ampName}}</div>
+                <div class="panel-body">
+                    <div>
+                       <ng-echarts class="col-md-12 echarts" ec-config="lineConfig" ec-option="lineOptionA" ></ng-echarts> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="row">
+        <div class="col-md-6" ng-if="dat.tam.length > 0">
+            <div class="panel panel-default">
+                <div class="panel-heading">{{tamName}}</div>
+                <div class="panel-body">
+                    <div>
+                      <ng-echarts class="col-md-12 echarts" ec-config="lineConfig" ec-option="lineOptionT" ></ng-echarts>   
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6" ng-if="dat.vill.length > 0" >
+            <div class="panel panel-default">
+                <div class="panel-heading">{{villName}}</div>
+                <div class="panel-body">
+                    <div>
+                      <ng-echarts class="col-md-12 echarts" ec-config="lineConfig" ec-option="lineOptionV" ></ng-echarts>   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

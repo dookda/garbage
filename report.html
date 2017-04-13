@@ -1,0 +1,81 @@
+<section id='tools'>
+    <ul class='breadcrumb' id='breadcrumb'>
+        <li class='title'>{{title}}</li>
+    </ul>
+    <div id='toolbar'>
+        <div class='btn-group'>
+            <a class='btn' ng-click="reload()" title='Reload'>
+                <i class='icon-refresh'></i> Refresh
+            </a>
+        </div>
+    </div>
+</section>
+<!-- Content -->
+<div id='content'>
+    <div class='panel panel-default grid'>
+        <div class='panel-heading'>
+            <i class='icon-table icon-large'></i> Default Table
+            <div class='panel-tools'>
+                <div class='btn-group'>
+                    <a class='btn' href=''>
+                        <i class='icon-filter'></i> Filters
+                    </a>
+                </div>
+                <div class='badge'>มีพื้นที่เฝ้าระวัง {{countRec}} แห่ง</div>
+            </div>
+        </div>
+        <div class='panel-body filters'>
+            <div class='row'>
+                <div class='col-md-9'>
+                    {{response}}
+                </div>
+                <div class='col-md-3'>
+                    <div class='input-group'>
+                        <input class='form-control' ng-model="tfilter" placeholder='Quick search...' type='text'>
+                        <span class='input-group-btn'>
+                    <button class='btn' type='button'>
+                      <i class='icon-search'></i>
+                    </button>
+                  </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <table class='table'>
+            <tr>
+                <th class="text-center" colspan="2">ลำดับ</th>
+                <th class="text-center" colspan="2">รายละเอียด</th>
+                <th class="text-center" colspan="2">หมู่บ้าน</th>
+                <th class="text-center" colspan="2">ตำบล</th>
+                <th class="text-center" colspan="2">อำเภอ</th>
+                <th class="text-center" colspan="2">จังหวัด</th>
+                <th class="text-center" colspan="2">วันที่รายงาน</th>
+                <th class="text-center" colspan="2">หมายเลขอ้างอิง</th>
+                <th class="text-center" colspan="2">Actions</th>
+            </tr>
+            <tr ng-repeat="d in dengues | filter: tfilter | orderBy:'date_sick':true ">
+                <td class="text-center" colspan="2">{{$index+1}}</td>
+                <td class="text-center" colspan="2">{{d.pat_desc}}<span ng-if="d.pat_desc == null">-</span></td>
+                <td class="text-center" colspan="2">{{d.vill_name}}<span ng-if="d.vill_name == null">-</span></td>
+                <td class="text-center" colspan="2">{{d.tam_name}}<span ng-if="d.tam_name == null">-</span></td>
+                <td class="text-center" colspan="2">{{d.amp_name}}<span ng-if="d.amp_name == null">-</span></td>
+                <td class="text-center" colspan="2">{{d.prov_name}}<span ng-if="d.prov_name == null">-</span></td>
+                <td class="text-center" colspan="2">{{d.date_sick}}</td>
+                <td class="text-center" colspan="2">{{d.token}}</td>
+                <td class="text-center" colspan="2">
+                    <a class='btn btn-success' data-toggle='tooltip' title='Zoom' ng-click="goMap(d.lat,d.lng)" href='#!/map'>
+                        <i class='icon-zoom-in'></i>
+                    </a>
+                    <a class='btn btn-info' href='#'>
+                        <i class='icon-edit'></i>
+                    </a>
+                    <a class='btn btn-danger' href='' ng-click="delete(d)">
+                        <i class='icon-trash'></i>
+                    </a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

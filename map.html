@@ -1,0 +1,27 @@
+<section id='tools'>
+    <ul class='breadcrumb' id='breadcrumb'>
+        <li class='title'>{{title}}</li>
+        <li>Latitude: {{center.lat}}</li>
+        <li>Longitude: {{center.lng}}</li>
+        <li>Zoom: {{center.zoom}}</li>
+    </ul>
+    <div id='toolbar'>
+        <div class='btn-group'>
+            <a class='btn btn-primary ' ng-click='addMarkers()'>
+                <i class="icon-plus-sign icon-white"></i> เพิ่มตำแหน่งผู้ป่วย
+            </a>
+            <a class='btn btn-danger' ng-click='removeMarkers()'>
+                <i class="icon-minus-sign icon-white"></i> ลบหมุด
+            </a>
+            <a class='btn' ng-click="reload()" title='Reload'>
+                <i class='icon-refresh'></i> Refresh
+            </a>
+        </div>
+    </div>
+</section>
+<!-- Content -->
+<!-- <div id='content'> -->
+<div style="padding: 0px;" id='content'>
+    <leaflet markers="markers" geojson="geojson" lf-center="center" layers="layers" width="100%" height="100%"></leaflet>
+</div>
+<!-- </div> -->
