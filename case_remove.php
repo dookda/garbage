@@ -4,30 +4,10 @@
     header("Access-Control-Allow-Credentials: true");
     header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 
-	include "../lib/hms.php";
+	include "../lib/gb.php";
     conndb();
 
 	
-function getData($col,$val,$alrcode){
-
-    if(gettype($val) =='string'){
-        $val = "'$val'";
-    }
-
-    $rs = pg_query("SELECT alrcode FROM alr_mobile WHERE alrcode = '$alrcode'");
-    $result = pg_fetch_array($rs);
-
-    if (empty($result['alrcode'])){  
-        $sql = "INSERT INTO alr_mobile ($col) VALUES ($val)";
-        pg_query($sql);  
-        return $sql;
-    }else{
-        $sql = "UPDATE alr_mobile SET $col=$val WHERE alrcode = '$alrcode'";
-        pg_query($sql);
-        return $sql;
-    }
-}
-
 $postdata = file_get_contents("php://input");
 if (isset($postdata)) {
     $request = json_decode($postdata);
@@ -38,7 +18,7 @@ if (isset($postdata)) {
         echo $value;
     };*/
 
-    pg_query("DELETE FROM dengue_point WHERE token = $token");
+    pg_query("DELETE FROM gb_point WHERE token = $token");
     //echo $token;
 
 /*    foreach($request as $item => $value){

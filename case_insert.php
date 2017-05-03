@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 
-include "../lib/hms.php";
+include "../lib/gb.php";
 conndb();
 
 $postdata = file_get_contents("php://input");
@@ -23,7 +23,7 @@ if (isset($postdata)) {
 
 
 
-    $sql = "INSERT INTO dengue_point (geom, lat, lng, pat_desc, vill_code, tam_code, amp_code, prov_code, date_sick, token) 
+    $sql = "INSERT INTO gb_point (geom, lat, lng, pat_desc, vill_code, tam_code, amp_code, prov_code, date_sick, token) 
 			VALUES ( ST_GeomFromText('POINT($lng $lat)', 4326), $lat, $lng, '$pat_desc', '$vill_code', '$tam_code', '$amp_code','$prov_code', '$date_sick', $token)";
 			pg_query($sql);
         

@@ -29,9 +29,9 @@ if (isset($postdata)) {
     $token = mt_rand(100000, 999999);
 
     if($gbremark==null){
-        $sql = "INSERT INTO gbdata (gbmonth, gbyear, gbgeneral, gborganic, gbrecycle, gbhazard,  gbelect, gbdispose, gbcost, gbinfect, gbinfectclr, gbindust, gbindustclr, gbcollect, token) VALUES ('$gbmonth',$gbyear,$gbgeneral,$gborganic,$gbrecycle,$gbhazard,$gbelect,$gbdispose,$gbcost,$gbinfect,$gbinfectclr,$gbindust,$gbindustclr,$gbcollect,$token)";
+        $sql = "INSERT INTO gb_data (gbmonth, gbyear, gbgeneral, gborganic, gbrecycle, gbhazard,  gbelect, gbdispose, gbcost, gbinfect, gbinfectclr, gbindust, gbindustclr, gbcollect, token) VALUES ('$gbmonth',$gbyear,$gbgeneral,$gborganic,$gbrecycle,$gbhazard,$gbelect,$gbdispose,$gbcost,$gbinfect,$gbinfectclr,$gbindust,$gbindustclr,$gbcollect,$token)";
     }else{
-        $sql = "INSERT INTO gbdata (gbmonth, gbyear, gbgeneral, gborganic, gbrecycle, gbhazard,  gbelect, gbdispose, gbcost, gbinfect, gbinfectclr, gbindust, gbindustclr, gbcollect, gbremark, token) VALUES ('$gbmonth',$gbyear,$gbgeneral,$gborganic,$gbrecycle,$gbhazard,$gbelect,$gbdispose,$gbcost,$gbinfect,$gbinfectclr,$gbindust,$gbindustclr,$gbcollect,'$gbremark',$token)";
+        $sql = "INSERT INTO gb_data (gbmonth, gbyear, gbgeneral, gborganic, gbrecycle, gbhazard,  gbelect, gbdispose, gbcost, gbinfect, gbinfectclr, gbindust, gbindustclr, gbcollect, gbremark, token) VALUES ('$gbmonth',$gbyear,$gbgeneral,$gborganic,$gbrecycle,$gbhazard,$gbelect,$gbdispose,$gbcost,$gbinfect,$gbinfectclr,$gbindust,$gbindustclr,$gbcollect,'$gbremark',$token)";
     }
 
     pg_query($sql);

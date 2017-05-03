@@ -1,6 +1,7 @@
 angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
     .controller("mapController", function($scope, $rootScope, leafletMapEvents,
-        $http, $filter, $timeout, $interval, dengueService, placeService, leafletData) {
+        $http, $filter, $timeout, $interval, garbageService,
+        dengueService, placeService, leafletData) {
 
         $scope.center = dengueService.selectedLocation;
 
@@ -8,8 +9,8 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         if ($scope.center.lat == null) {
             //console.log('yess null');
             var center = {
-                lat: 17.00,
-                lng: 100.00,
+                lat: 18.885497977462876,
+                lng: 100.74462890625,
                 zoom: 8
             }
         } else {
@@ -59,61 +60,48 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
                 },
                 overlays: {
                     pro: {
-                        name: 'province',
+                        name: 'ขอบเขตจังหวัด',
                         type: 'wms',
                         visible: true,
-                        url: 'http://localhost:8080/geoserver/hms/wms?',
+                        url: 'http://cgi.uru.ac.th/gs-gb/wms?',
                         layerParams: {
-                            layers: 'hms:pro_dhf',
+                            layers: 'nan:province',
                             format: 'image/png',
                             transparent: true
                         },
                         zIndex: 4
                     },
                     amp: {
-                        name: 'amphoe',
+                        name: 'ขอบเขตอำเภอ',
                         type: 'wms',
                         visible: true,
-                        url: 'http://localhost:8080/geoserver/hms/wms?',
+                        url: 'http://cgi.uru.ac.th/gs-gb/wms?',
                         layerParams: {
-                            layers: 'hms:amp_dhf',
+                            layers: 'nan:amphoe',
                             format: 'image/png',
                             transparent: true
                         },
                         zIndex: 3
                     },
                     tambon: {
-                        name: 'tambon',
+                        name: 'ขอบเขตตำบล',
                         type: 'wms',
                         visible: true,
-                        url: 'http://localhost:8080/geoserver/hms/wms?',
+                        url: 'http://cgi.uru.ac.th/gs-gb/wms?',
                         layerParams: {
-                            layers: 'hms:tam_dhf',
+                            layers: 'nan:tambon',
                             format: 'image/png',
                             transparent: true,
                             "showOnSelector": true,
                         },
                         zIndex: 2
                     },
-                    v_dengue_buffer: {
-                        name: 'v_dengue_buffer',
-                        type: 'wms',
-                        url: 'http://localhost:8080/geoserver/hms/wms?',
-                        layerParams: {
-                            layers: 'hms:v_dengue_buffer',
-                            format: 'image/png',
-                            transparent: true,
-                            "showOnSelector": true,
-                        },
-                        visible: false,
-                        zIndex: 1
-                    },
                     village: {
-                        name: 'village',
+                        name: 'หมู่บ้าน',
                         type: 'wms',
-                        url: 'http://localhost:8080/geoserver/hms/wms?',
+                        url: 'http://cgi.uru.ac.th/gs-gb/wms?',
                         layerParams: {
-                            layers: 'hms:vill_dhf',
+                            layers: 'nan:village',
                             format: 'image/png',
                             transparent: true,
                             "showOnSelector": true,
@@ -135,7 +123,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
 
         // Get the countries geojson data
         $scope.getJson = function() {
-            dengueService.getJson()
+            garbageService.getJson()
                 .then(function(data) {
                     //addGeoJsonLayerWithClustering(data.data);
                     var markers = L.markerClusterGroup();
@@ -282,7 +270,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         // insert data 
         $scope.insertMarker = function() {
 
-            var link = 'http://localhost/hms/case_insert.php';
+            var link = 'http://cgi.uru.ac.th/garbage/case_insert.php';
             //$http.post(link, {username : $scope.data.farmer_fname})
             $http.post(link, $scope.dat)
                 .then(function(res) {
@@ -570,6 +558,27 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
 
 .controller("formController", function($scope, $http, $timeout) {
     $scope.title = 'form';
+
+    var d = new Date();
+    var month = new Array();
+    month[0] = "มกราคม";
+    month[1] = "กุมภาพันธ์";
+    month[2] = "มีนาคม";
+    month[3] = "เมษายน";
+    month[4] = "พฤษภาคม";
+    month[5] = "มิถุนายน";
+    month[6] = "กรกฎาคม";
+    month[7] = "สิงหาคม";
+    month[8] = "กันยายน";
+    month[9] = "ตุลาคม";
+    month[10] = "พฤศจิกายน";
+    month[11] = "ธันวาคม";
+    var m = month[d.getMonth()];
+    //console.log(d.getFullYear());
+
+    $scope.month = m;
+    $scope.year = d.getFullYear()+543;
+    //$scope.month = moment().format('MMMM');
 
     $scope.insertGarbage = function() {
 
