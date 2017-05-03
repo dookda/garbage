@@ -582,7 +582,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
 
     $scope.insertGarbage = function() {
 
-        var link = 'http://localhost/garbage/gb_insert.php';
+        var link = 'http://cgi.uru.ac.th/garbage/gb_insert.php';
         //$http.post(link, {username : $scope.data.farmer_fname})
         $http.post(link, $scope.gb)
             .then(function(res) {
@@ -638,7 +638,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         //console.log(item);
         $scope.dengues.splice($scope.dengues.indexOf(item), 1);
 
-        var link = 'http://localhost/hms/case_remove.php';
+        var link = 'http://cgi.uru.ac.th/garbage/case_remove.php';
         $http.post(link, item)
             .then(function(res) {
                 $scope.response = res.data;
