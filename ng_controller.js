@@ -270,7 +270,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         // insert data 
         $scope.insertMarker = function() {
 
-            var link = 'http://cgi.uru.ac.th/garbage/gb_insert.php';
+            var link = 'http://cgi.uru.ac.th/garbage/case_insert.php';
             //$http.post(link, {username : $scope.data.farmer_fname})
             $http.post(link, $scope.dat)
                 .then(function(res) {
@@ -580,23 +580,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
     $scope.year = d.getFullYear()+543;
     //$scope.month = moment().format('MMMM');
 
-    $scope.insertGarbage = function() {
-
-        var link = 'http://cgi.uru.ac.th/garbage/gb_insert.php';
-        //$http.post(link, {username : $scope.data.farmer_fname})
-        $http.post(link, $scope.gb)
-            .then(function(res) {
-                $scope.response = res.data;
-                console.log(res.data);
-
-            });
-
-        $timeout(function() {
-            cancelGarbage();
-        }, 400);
-
-    };
-
+    //define initial
     $scope.initial = {
         month: '',
         year: '',
@@ -613,7 +597,24 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         industClear: '',
         collectPoint: '',
         remark: '',
-    }
+    };
+
+    $scope.insertGarbage = function() {
+
+        var link = 'http://cgi.uru.ac.th/garbage/gb_insert.php';
+        //$http.post(link, {username : $scope.data.farmer_fname})
+        $http.post(link, $scope.gb)
+            .then(function(res) {
+                $scope.response = res.data;
+                console.log(res.data);
+
+            });
+
+        $timeout(function() {
+            $scope.gb = angular.copy($scope.initial);
+        }, 400);
+
+    };    
     
     $scope.cancelGarbage = function() {
         $scope.gb = angular.copy($scope.initial);

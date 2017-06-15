@@ -67,39 +67,39 @@
                     <div class="form-group row">
                         <div class='col-lg-4'>
                             <label class='control-label'>ขยะมูลฝอยทั่วไป (ตัน/เดือน)</label>
-                            <input class='form-control' ng-model='gb.general' placeholder='ตัน/เดือน' type='number' ng-required="true">
+                            <input class='form-control' ng-model='gb.general' placeholder='ตัน/เดือน' type='number' step="any" ng-required="true">
                         </div>
                         <div class='col-lg-4'>
                             <label class='control-label'>ขยะอินทรีย์ (ตัน/เดือน)</label>
-                            <input class='form-control' ng-model='gb.organic' placeholder='ตัน/เดือน' type='number' ng-required="true">
+                            <input class='form-control' ng-model='gb.organic' placeholder='ตัน/เดือน' type='number' step="any" ng-required="true">
                         </div>
                         <div class='col-lg-4'>
                             <label class='control-label'>ขยะรีไซเคิล (ตัน/เดือน)</label>
-                            <input class='form-control' ng-model='gb.recycle' placeholder='ตัน/เดือน' type='number' ng-required="true">
+                            <input class='form-control' ng-model='gb.recycle' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class='col-lg-4'>
                             <label class='control-label'>ขยะอันตราย (ตัน/เดือน)</label>
-                            <input class='form-control' ng-model='gb.hazard' placeholder='ตัน/เดือน' type='number' ng-required="true">
+                            <input class='form-control' ng-model='gb.hazard' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                         </div>
                         <div class='col-lg-4'>
                             <label class='control-label'>ขยะอิเล็กทรอนิกส์ (E-waste) (ตัน/เดือน)</label>
-                            <input class='form-control' ng-model='gb.electronic' placeholder='ตัน/เดือน' type='number' ng-required="true">
+                            <input class='form-control' ng-model='gb.electronic' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                         </div>
                     </div>
                     <hr>
                     <div class='form-group row'>
                         <div class='col-lg-4'>
                             <label class='control-label'>2. ปริมาณขยะมูลฝอยที่เข้าสู่ระบบกำจัด (การเก็บขนไปกำจัด) {{gb.dispose}} ตัน/เดือน</label>
-                            <input class='form-control' ng-model='gb.dispose' placeholder='ตัน/เดือน' type='number' ng-required="true">
+                            <input class='form-control' ng-model='gb.dispose' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                         </div>
                     </div>
                     <hr>
                     <div class='form-group row'>
                         <div class='col-lg-4'>
                             <label class='control-label'>3. ค่าช้จ่ายการบริหารจัดการขยะมูลฝอยในเดือนนี้ {{gb.cost}} บาท/เดือน</label>
-                            <input class='form-control' ng-model='gb.cost' placeholder='บาท/เดือน' type='number' ng-required="true">
+                            <input class='form-control' ng-model='gb.cost' step="any" placeholder='บาท/เดือน' type='number' ng-required="true">
                         </div>
                     </div>
                     <hr>
@@ -108,11 +108,11 @@
                         <div class="form-group row">
                             <div class='col-lg-4'>
                                 <label class='control-label'>ปริมาณมูลฝอยติดเชื้อเกิดขึ้น (ตัน/เดือน)</label>
-                                <input class='form-control' ng-model='gb.infect' placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                <input class='form-control' ng-model='gb.infect' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                             </div>
                             <div class='col-lg-4'>
                                 <label class='control-label'>ปริมาณมูลฝอยติดเชื้อกำจัดอย่างถูกต้อง (ตัน/เดือน)</label>
-                                <input class='form-control' ng-model='gb.infectClear' placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                <input class='form-control' ng-model='gb.infectClear' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                             </div>
                         </div>
                     </div>
@@ -122,11 +122,11 @@
                         <div class="form-group row">
                             <div class='col-lg-4'>
                                 <label class='control-label'>ปริมาณกากอุตสาหกรรมเกิดขึ้น (ตัน/เดือน)</label>
-                                <input class='form-control' ng-model='gb.indust' placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                <input class='form-control' ng-model='gb.indust' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                             </div>
                             <div class='col-lg-4'>
                                 <label class='control-label'>ปริมาณกากอุตสาหกรรมกำจัดอย่างถูกต้อง (ตัน/เดือน)</label>
-                                <input class='form-control' ng-model='gb.industClear' placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                <input class='form-control' ng-model='gb.industClear' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                             </div>
                         </div>
                     </div>
@@ -136,7 +136,7 @@
                             <label class='control-label'>6. จุดรวบรวมขยะอันตราย</label>
                             <div class="form-group">
                                 <label class='control-label'>ติดตั้งจุดรวบรวมขยะอันตรายหมู่บ้าน/ชุมชน ในเขตองค์กรปกครองท้องถิ่นรวม {{gb.collectPoint}} จุด</label>
-                                <input class='form-control' ng-model='gb.collectPoint' placeholder='จุด/แห่ง' type='number' ng-required="true">
+                                <input class='form-control' ng-model='gb.collectPoint' step="any" placeholder='จุด/แห่ง' type='number' ng-required="true">
                             </div>
                         </div>
                     </div>
