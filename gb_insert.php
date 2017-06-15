@@ -7,6 +7,10 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 include "../lib/gb.php";
 conndb();
 
+// Connect database
+require('../lib/conn.php');
+$dbconn = pg_connect($conn_gb) or die('Could not connect'); 
+
 $postdata = file_get_contents("php://input");
 if (isset($postdata)) {
 
@@ -46,4 +50,7 @@ if (isset($postdata)) {
     echo "Not called properly with username parameter!";
 }
 
-closedb();
+// Closing connection
+    pg_close($dbconn);
+
+?>

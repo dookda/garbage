@@ -270,7 +270,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         // insert data 
         $scope.insertMarker = function() {
 
-            var link = 'http://cgi.uru.ac.th/garbage/case_insert.php';
+            var link = 'http://cgi.uru.ac.th/garbage/gb_insert.php';
             //$http.post(link, {username : $scope.data.farmer_fname})
             $http.post(link, $scope.dat)
                 .then(function(res) {

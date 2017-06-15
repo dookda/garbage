@@ -38,3 +38,5 @@ if (isset($postdata)) {
 }
 
 closedb();
+
+?>
