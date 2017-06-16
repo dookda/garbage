@@ -596,7 +596,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         indust: '',
         industClear: '',
         collectPoint: '',
-        remark: '',
+        remark: ''
     };
 
     $scope.insertGarbage = function() {
@@ -655,4 +655,9 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         $scope.dat = { lat: lat, lng: lng };
         dengueService.selectedLocation = $scope.dat; //console.log(lat+'-'+lng);
     };
+})
+
+
+.controller('chartCtrl', function(){
+
 });
