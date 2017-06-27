@@ -7,15 +7,15 @@
     </ul>
     <div id='toolbar'>
         <div class='btn-group'>
-            <a class='btn btn-primary ' ng-click='addMarkers()'>
+            <button type="button" class='btn btn-primary' ng-click='addMarkers()'>
                 <i class="icon-plus-sign icon-white"></i> เพิ่มสถานที่
-            </a>
-            <!-- <a class='btn btn-danger' ng-click='removeMarkers()'>
-                <i class="icon-minus-sign icon-white"></i> ลบหมุด
-            </a> -->
-            <a class='btn' ng-click="reload()" title='Reload'>
+            </button>
+            <button type="button" class='btn btn-info' ng-click='logout()'>
+                <i class="icon-plus-sign icon-white"></i> Logout
+            </button>
+            <button type="button" class='btn' ng-click="reload()" title='Reload'>
                 <i class='icon-refresh'></i> Refresh
-            </a>
+            </button>
         </div>
     </div>
 </section>

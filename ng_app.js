@@ -1,25 +1,31 @@
-angular.module('app', ['ngRoute','app.service','app.controller'])
+angular.module('app', ['ngRoute', 'app.service', 'app.controller'])
 
-.config(function($routeProvider) {
-  $routeProvider
+  .config(function ($routeProvider) {
+    $routeProvider
 
-  .when('/map', {
-    templateUrl : 'map.html',
-    controller  : 'mapController'
+      .when('/login', {
+        templateUrl: 'login.html',
+        controller: 'loginCtrl'
+      })
+      .when('/register', {
+        templateUrl: 'register.html',
+        controller: 'registerCtrl'
+      })
+      .when('/map', {
+        templateUrl: 'map.html',
+        controller: 'mapCtrl'
+      })
+      .when('/report', {
+        templateUrl: 'report.html',
+        controller: 'reportCtrl'
+      })
+      .when('/chart', {
+        templateUrl: 'chart.html',
+        controller: 'chartCtrl'
+      })
+      .when('/form', {
+        templateUrl: 'form.html',
+        controller: 'formCtrl'
+      })
+      .otherwise({ redirectTo: '/map' });
   })
-  .when('/report', {
-    templateUrl : 'report.html',
-    controller  : 'reportController'
-  })
-  .when('/chart', {
-    templateUrl : 'chart.html',
-    controller  : 'chartController'
-  })
-
-  .when('/form', {
-    templateUrl : 'form.html',
-    controller  : 'formController'
-  })
-
-  .otherwise({redirectTo: '/map'});
-})

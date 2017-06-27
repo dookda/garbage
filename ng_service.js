@@ -1,28 +1,26 @@
 angular.module('app.service', [])
-
-.service('dengueService', function($http) {
+.service('loginService', function($http) {
     return {
-        selectedLocation: {},
-        loadDenguePoint: function() {
-            var data = 'http://cgi.uru.ac.th/garbage-api/index.php/gbpoint';
+        pageLocation: {},
+        getUser: function() {
+            var data = 'http://cgi.uru.ac.th/garbage-api/index.php/users';
             return $http.get(data);
         },
-        getJson: function() {
-            var data = 'http://cgi.uru.ac.th/gs-gb/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nan:gb_point&outputFormat=application%2Fjson';
-            return $http.get(data);
-        }
     }
 })
-
 .service('garbageService', function($http) {
     return {
         selectedLocation: {},
-        loadDenguePoint: function() {
+        loadGbPoint: function() {
             var data = 'http://cgi.uru.ac.th/garbage-api/index.php/gbpoint';
             return $http.get(data);
         },
         getJson: function() {
             var data = 'http://cgi.uru.ac.th/gs-gb/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=nan:gb_point&outputFormat=application%2Fjson';
+            return $http.get(data);
+        },
+        getApt: function() {
+            var data = 'http://cgi.uru.ac.th/garbage-api/index.php/apt_location';
             return $http.get(data);
         }
     }
@@ -74,5 +72,7 @@ angular.module('app.service', [])
         }
     }
 })
+
+
 
 

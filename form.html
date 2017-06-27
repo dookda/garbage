@@ -2,157 +2,143 @@
     <ul class='breadcrumb' id='breadcrumb'>
         <li class='title'>{{title}}</li>
     </ul>
+
     <div id='toolbar'>
+        <div class='btn-group'>
+            <a class='btn btn-primary ' ng-click='logout()'>
+                <i class="icon-plus-sign icon-white"></i> Logout
+            </a>
+            <a class='btn' ng-click="reload()" title='Reload'>
+                <i class='icon-refresh'></i> Refresh
+            </a>
+        </div>
     </div>
+
 </section>
 <!-- Content -->
 <div id='content'>
+
     <div class='panel panel-default'>
         <div class='panel-heading'>
-            <i class='icon-edit icon-large'></i> แบบรายงานประจำเดือน 
+            <i class='icon-edit icon-large'></i> แบบรายงานประจำเดือน
         </div>
+
         <div class='panel-body'>
             <form>
                 <fieldset>
-                <div class='form-group'>
-                    <legend>แบบรายงานประจำเดือน {{month}} {{year}} </legend> 
-                    <p class='help-block '>*หากข้อใดไม่มีข้อมูลโปรดกรอก 0</p>
 
+                    <div class='form-group'>
+                        <legend>แบบรายงานประจำเดือน {{month}} {{year}} </legend>
 
-                    <div class='form-group row'>
-                        <div class='col-lg-4'>
-                        <label class='control-label'>เดือน</label>
-                        
-                        <select ng-model="gb.month" class='form-control' ng-required="true">
-                            <option value="jan">มกราคม</option>
-                            <option value="feb">กุมภาพันธ์</option>
-                            <option value="mar">มีนาคม</option>
-                            <option value="apr">เมษายน</option>
-                            <option value="may">พฤษภาคม</option>
-                            <option value="jun">มิถุนายน</option>
-                            <option value="jul">กรกฎาคม</option>
-                            <option value="aug">สิงหาคม</option>
-                            <option value="sep">กันยายน</option>
-                            <option value="oct">ตุลาคม</option>
-                            <option value="nov">พฤศจิกายน</option>
-                            <option value="dec">ธันวาคม</option>
-                        </select>
-                    </div>
-                    <div class='col-lg-4'>
-                        <label class='control-label'>ปี</label>                    
-                        <select ng-model="gb.year" class='form-control' ng-required="true">
-                            <option value="2013">2555</option>
-                            <option value="2014">2556</option>
-                            <option value="2015">2557</option>
-                            <option value="2016">2558</option>
-                            <option value="2017">2559</option>
-                            <option value="2018">2560</option>
-                            <option value="2019">2561</option>
-                            <option value="2020">2562</option>
-                            <option value="2021">2563</option>
-                            <option value="2022">2564</option>
-                            <option value="2023">2565</option>
-                            <option value="2024">2566</option>
-                            <option value="2025">2567</option>
-                            <option value="2026">2568</option>
-                            <option value="2027">2569</option>
-                            <option value="2028">2570</option>
-                        </select>
+                        <label class='control-label'>กรอกชื่อ และวันที่บันทึกข้อมูล</label>
+                        <p></p>
+                        <div class='form-group row'>
+                            <div class='col-lg-6'>
+                                <label>องค์กรปกครองส่วนท้องถิ่น: </label>
+                                <select class="form-control" ng-model="gb.apt_name" ng-options="a.name for a in apts" ng-required="true">
+                                <option value=""> </option>
+                            </select>
+                            </div>
+                            <div class='col-lg-6'>
+                                <label>วันที่กรอกข้อมูล: </label>
+                                <input ng-model="gb.date" type="date" min="2000-01-02" class='form-control'>
+                            </div>
                         </div>
-                    </div>
-                    <div class='form-group'>
-                        <label class='control-label'>1. ขยะมูลฝอยชุมชนที่เกิดขึ้นในเขตองค์กรปกครองท้องถิ่น {{gb.general+gb.organic+gb.recycle+gb.hazard+gb.electronic}} ตัน/เดือน</label>
-                        <label class='control-label'>แบ่งออกเป็น</label>
-                    </div>
-                    <div class="form-group row">
-                        <div class='col-lg-4'>
-                            <label class='control-label'>ขยะมูลฝอยทั่วไป (ตัน/เดือน)</label>
-                            <input class='form-control' ng-model='gb.general' placeholder='ตัน/เดือน' type='number' step="any" ng-required="true">
+                        <input ng-model="gb.gbsum" type='hidden' value="{{gb.general+gb.organic+gb.recycle+gb.hazard+gb.electronic}}" />
+                        <hr>
+                        <p class='help-block '>*หากข้อใดไม่มีข้อมูลโปรดกรอก 0</p>
+                        <div class='form-group'>
+                            <label class='control-label'>1. ขยะมูลฝอยชุมชนที่เกิดขึ้นในเขตองค์กรปกครองท้องถิ่น {{gb.general+gb.organic+gb.recycle+gb.hazard+gb.electronic}} ตัน/เดือน แบ่งออกเป็น</label>
                         </div>
-                        <div class='col-lg-4'>
-                            <label class='control-label'>ขยะอินทรีย์ (ตัน/เดือน)</label>
-                            <input class='form-control' ng-model='gb.organic' placeholder='ตัน/เดือน' type='number' step="any" ng-required="true">
-                        </div>
-                        <div class='col-lg-4'>
-                            <label class='control-label'>ขยะรีไซเคิล (ตัน/เดือน)</label>
-                            <input class='form-control' ng-model='gb.recycle' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <div class='col-lg-4'>
-                            <label class='control-label'>ขยะอันตราย (ตัน/เดือน)</label>
-                            <input class='form-control' ng-model='gb.hazard' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
-                        </div>
-                        <div class='col-lg-4'>
-                            <label class='control-label'>ขยะอิเล็กทรอนิกส์ (E-waste) (ตัน/เดือน)</label>
-                            <input class='form-control' ng-model='gb.electronic' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
-                        </div>
-                    </div>
-                    <hr>
-                    <div class='form-group row'>
-                        <div class='col-lg-4'>
-                            <label class='control-label'>2. ปริมาณขยะมูลฝอยที่เข้าสู่ระบบกำจัด (การเก็บขนไปกำจัด) {{gb.dispose}} ตัน/เดือน</label>
-                            <input class='form-control' ng-model='gb.dispose' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
-                        </div>
-                    </div>
-                    <hr>
-                    <div class='form-group row'>
-                        <div class='col-lg-4'>
-                            <label class='control-label'>3. ค่าช้จ่ายการบริหารจัดการขยะมูลฝอยในเดือนนี้ {{gb.cost}} บาท/เดือน</label>
-                            <input class='form-control' ng-model='gb.cost' step="any" placeholder='บาท/เดือน' type='number' ng-required="true">
-                        </div>
-                    </div>
-                    <hr>
-                    <div class='form-group'>
-                        <label class='control-label'>4. มูลฝอยติดเชื้อในเขตองค์กรปกครองส่วนท้องถิ่น {{gb.infect}} ตัน/เดือน</label>
                         <div class="form-group row">
                             <div class='col-lg-4'>
-                                <label class='control-label'>ปริมาณมูลฝอยติดเชื้อเกิดขึ้น (ตัน/เดือน)</label>
-                                <input class='form-control' ng-model='gb.infect' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                <label class='control-label'>ขยะมูลฝอยทั่วไป (ตัน/เดือน)</label>
+                                <input class='form-control' ng-model='gb.general' placeholder='ตัน/เดือน' type='number' step="any" ng-required="true">
                             </div>
                             <div class='col-lg-4'>
-                                <label class='control-label'>ปริมาณมูลฝอยติดเชื้อกำจัดอย่างถูกต้อง (ตัน/เดือน)</label>
-                                <input class='form-control' ng-model='gb.infectClear' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                <label class='control-label'>ขยะอินทรีย์ (ตัน/เดือน)</label>
+                                <input class='form-control' ng-model='gb.organic' placeholder='ตัน/เดือน' type='number' step="any" ng-required="true">
+                            </div>
+                            <div class='col-lg-4'>
+                                <label class='control-label'>ขยะรีไซเคิล (ตัน/เดือน)</label>
+                                <input class='form-control' ng-model='gb.recycle' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                             </div>
                         </div>
-                    </div>
-                    <hr>
-                    <div class='form-group'>
-                        <label class='control-label'>5. กากอุตสาหกรรมในเขตองค์กรปกครองส่วนท้องถิ่น {{gb.indust}} ตัน/เดือน</label>
                         <div class="form-group row">
                             <div class='col-lg-4'>
-                                <label class='control-label'>ปริมาณกากอุตสาหกรรมเกิดขึ้น (ตัน/เดือน)</label>
-                                <input class='form-control' ng-model='gb.indust' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                <label class='control-label'>ขยะอันตราย (ตัน/เดือน)</label>
+                                <input class='form-control' ng-model='gb.hazard' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                             </div>
                             <div class='col-lg-4'>
-                                <label class='control-label'>ปริมาณกากอุตสาหกรรมกำจัดอย่างถูกต้อง (ตัน/เดือน)</label>
-                                <input class='form-control' ng-model='gb.industClear' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                <label class='control-label'>ขยะอิเล็กทรอนิกส์ (E-waste) (ตัน/เดือน)</label>
+                                <input class='form-control' ng-model='gb.electronic' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                             </div>
                         </div>
-                    </div>
-                    <hr>
-                    <div class='form-group row'>
-                        <div class='col-lg-5'>
-                            <label class='control-label'>6. จุดรวบรวมขยะอันตราย</label>
-                            <div class="form-group">
-                                <label class='control-label'>ติดตั้งจุดรวบรวมขยะอันตรายหมู่บ้าน/ชุมชน ในเขตองค์กรปกครองท้องถิ่นรวม {{gb.collectPoint}} จุด</label>
-                                <input class='form-control' ng-model='gb.collectPoint' step="any" placeholder='จุด/แห่ง' type='number' ng-required="true">
+                        <hr>
+                        <div class='form-group row'>
+                            <div class='col-lg-4'>
+                                <label class='control-label'>2. ปริมาณขยะมูลฝอยที่เข้าสู่ระบบกำจัด (การเก็บขนไปกำจัด) {{gb.dispose}} ตัน/เดือน</label>
+                                <input class='form-control' ng-model='gb.dispose' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
                             </div>
                         </div>
-                    </div>
-                    <hr>
-                    <div class='form-group '>
-                        <label class='control-label '>หมายเหตุ*</label>
-                        <textarea class='form-control ' ng-model='gb.remark' rows='4'></textarea>
-                        <p class='help-block '>*สำหรับบันทึกรายละเอียดอื่นของเดือนนี้ (ถ้ามี)</p>
-                    </div>                    
+                        <hr>
+                        <div class='form-group row'>
+                            <div class='col-lg-4'>
+                                <label class='control-label'>3. ค่าช้จ่ายการบริหารจัดการขยะมูลฝอยในเดือนนี้ {{gb.cost}} บาท/เดือน</label>
+                                <input class='form-control' ng-model='gb.cost' step="any" placeholder='บาท/เดือน' type='number' ng-required="true">
+                            </div>
+                        </div>
+                        <hr>
+                        <div class='form-group'>
+                            <label class='control-label'>4. มูลฝอยติดเชื้อในเขตองค์กรปกครองส่วนท้องถิ่น {{gb.infect}} ตัน/เดือน</label>
+                            <div class="form-group row">
+                                <div class='col-lg-4'>
+                                    <label class='control-label'>ปริมาณมูลฝอยติดเชื้อเกิดขึ้น (ตัน/เดือน)</label>
+                                    <input class='form-control' ng-model='gb.infect' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                </div>
+                                <div class='col-lg-4'>
+                                    <label class='control-label'>ปริมาณมูลฝอยติดเชื้อกำจัดอย่างถูกต้อง (ตัน/เดือน)</label>
+                                    <input class='form-control' ng-model='gb.infectClear' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class='form-group'>
+                            <label class='control-label'>5. กากอุตสาหกรรมในเขตองค์กรปกครองส่วนท้องถิ่น {{gb.indust}} ตัน/เดือน</label>
+                            <div class="form-group row">
+                                <div class='col-lg-4'>
+                                    <label class='control-label'>ปริมาณกากอุตสาหกรรมเกิดขึ้น (ตัน/เดือน)</label>
+                                    <input class='form-control' ng-model='gb.indust' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                </div>
+                                <div class='col-lg-4'>
+                                    <label class='control-label'>ปริมาณกากอุตสาหกรรมกำจัดอย่างถูกต้อง (ตัน/เดือน)</label>
+                                    <input class='form-control' ng-model='gb.industClear' step="any" placeholder='ตัน/เดือน' type='number' ng-required="true">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class='form-group row'>
+                            <div class='col-lg-5'>
+                                <label class='control-label'>6. จุดรวบรวมขยะอันตราย</label>
+                                <div class="form-group">
+                                    <label class='control-label'>ติดตั้งจุดรวบรวมขยะอันตรายหมู่บ้าน/ชุมชน ในเขตองค์กรปกครองท้องถิ่นรวม {{gb.collectPoint}} จุด</label>
+                                    <input class='form-control' ng-model='gb.collectPoint' step="any" placeholder='จุด/แห่ง' type='number' ng-required="true">
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class='form-group '>
+                            <label class='control-label '>หมายเหตุ*</label>
+                            <textarea class='form-control ' ng-model='gb.remark' rows='4'></textarea>
+                            <p class='help-block '>*สำหรับบันทึกรายละเอียดอื่นของเดือนนี้ (ถ้ามี)</p>
+                        </div>
                 </fieldset>
-                <div class='form-actions '>
+                <div class='form-actions'>
                     <button class='btn btn-default ' type='submit' ng-click="insertGarbage();">ตกลง</button>
                     <a class='btn ' ng-click="cancelGarbage();">ยกเลิก</a>
                 </div>
             </form>
+            </div>
         </div>
+
     </div>
-    
-</div>

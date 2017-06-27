@@ -1,10 +1,97 @@
 angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
-    .controller("mapController", function($scope, $rootScope, leafletMapEvents,
-        $http, $filter, $timeout, $interval, garbageService,
-        dengueService, placeService, leafletData) {
 
-        $scope.center = dengueService.selectedLocation;
+    .controller("registerCtrl", function ($scope, $http, garbageService) {
 
+        $scope.title = 'register';
+        // get apt location
+        $scope.getApt = function () {
+            garbageService.getApt()
+                .then(function (res) {
+                    $scope.apts = res.data;
+                    //console.log(response.data);
+                    //$scope.tam = [];
+                })
+        };
+        $scope.getApt();
+
+        // check password
+        $scope.bchk = true;
+        $scope.change = function () {
+            $scope.errorMsg = "กรุณากรอก password ให้เหมือนกัน";
+            if ($scope.reg.pw1 == $scope.reg.pw2) {
+                $scope.bchk = false;
+                $scope.errorMsg = null;
+                //console.log($scope.bchk);
+            }
+        }
+
+        // insert data to database
+        $scope.register = function () {
+            console.log($scope.reg.apt_name.name);
+            var link = 'http://cgi.uru.ac.th/garbage/gb_usr_insert.php';
+            $http.post(link, $scope.reg)
+                .then(function (res) {
+                    console.log(res.data);
+                });
+        }
+    })
+
+    .controller("loginCtrl", function ($scope, $http, $window, loginService) {
+        $scope.pageLocation = loginService.pageLocation;
+
+        $scope.title = 'login';
+
+        //login
+        $scope.login2 = function () {
+            var link = 'http://cgi.uru.ac.th/garbage/gb_login_action.php';
+            $http.post(link, $scope.usr)
+                .then(function (res) {
+
+                    if (res.data.data[0].status == 'true') {
+
+                        if ($scope.pageLocation == 'report') {
+                            $window.location.href = "#!/report";
+                        } else if ($scope.pageLocation == 'form') {
+                            $window.location.href = "#!/form";
+                        } else if ($scope.pageLocation == 'chart') {
+                            $window.location.href = "#!/chart";
+                        } else {
+                            $window.location.href = "#!/form";
+                        }
+
+                    } else {
+                        $scope.errorMsg = 'กรุณาลองใหม่อีกครั้ง';
+                    }
+                });
+        };
+    })
+
+    .controller("mapCtrl", function ($scope, $rootScope, leafletMapEvents, leafletData,
+        $http, $filter, $timeout, $window, $interval, loginService, garbageService, placeService) {
+
+        $scope.title = 'map';
+        $scope.center = garbageService.selectedLocation;
+        $scope.pageLocation = loginService.pageLocation;
+
+        //session
+        $http.get("http://cgi.uru.ac.th/garbage/gb_session.php")
+            .then(function (res) {
+                $scope.session = res.data.data;
+                $scope.access_token = res.data.data[0].access_token;
+
+                if ($scope.access_token == null) {
+                    loginService.pageLocation = "map";
+                    $window.location.href = "#!/login";
+                }
+            });
+
+        $scope.logout = function () {
+            $http.get("http://cgi.uru.ac.th/garbage/gb_session.php?destroy=yes")
+                .then(function (res) {
+                    loginService.pageLocation = "map";
+                    $window.location.href = "#!/login";
+                })
+        };
 
         if ($scope.center.lat == null) {
             //console.log('yess null');
@@ -22,7 +109,6 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
             //console.log($scope.center.lat + '-' + $scope.center.lng);
         }
 
-        $scope.title = 'map';
         angular.extend($scope, {
             center: center,
             layers: {
@@ -122,18 +208,18 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         });
 
         // Get the countries geojson data
-        $scope.getJson = function() {
+        $scope.getJson = function () {
             garbageService.getJson()
-                .then(function(data) {
+                .then(function (data) {
                     //addGeoJsonLayerWithClustering(data.data);
                     var markers = L.markerClusterGroup();
                     var geoJsonLayer = L.geoJson(data.data, {
-                        onEachFeature: function(feature, layer) {
+                        onEachFeature: function (feature, layer) {
                             layer.bindPopup(feature.properties.pat_desc);
                         }
                     });
                     markers.addLayer(geoJsonLayer);
-                    leafletData.getMap().then(function(map) {
+                    leafletData.getMap().then(function (map) {
                         map.addLayer(markers);
                         //map.fitBounds(markers.getBounds());
                     });
@@ -158,9 +244,9 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         */
 
         // fix baselayers change
-        $scope.$on('leafletDirectiveMap.baselayerchange', function(ev, layer) {
-            console.log('base layer changed to %s', layer.leafletEvent.name);
-            angular.forEach($scope.layers.overlays, function(overlay) {
+        $scope.$on('leafletDirectiveMap.baselayerchange', function (ev, layer) {
+            //console.log('base layer changed to %s', layer.leafletEvent.name);
+            angular.forEach($scope.layers.overlays, function (overlay) {
                 if (overlay.visible) overlay.doRefresh = true;
             });
         });
@@ -170,40 +256,40 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         var id = 1;
 
         $scope.markers = new Array();
-        $scope.$on("leafletDirectiveMap.click", function(events, args) {
+        $scope.$on("leafletDirectiveMap.click", function (events, args) {
             var leafEvent = args.leafletEvent;
 
             if ($scope.addPoint == true) {
                 $scope.markers.push({
-                    getMessageScope: function() {
+                    getMessageScope: function () {
                         return $scope;
                     },
                     id: id,
                     lat: leafEvent.latlng.lat,
                     lng: leafEvent.latlng.lng,
                     message: '<form><div class="form-group">' +
-                        '<label>รายละเอียด: </label><input type="text" class="form-control" ng-model= "dat.desc" ng-required="true" />' +
+                    '<label>รายละเอียด: </label><input type="text" class="form-control" ng-model= "dat.desc" ng-required="true" />' +
 
-                        '<label>จังหวัด: </label><select class="form-control" ng-model="dat.prov" ng-options="p.prov_code as p.prov_name for p in province" ng-change="getAmp()" ng-required="true">' +
-                        '<option value=""> </option></select>' +
+                    '<label>จังหวัด: </label><select class="form-control" ng-model="dat.prov" ng-options="p.prov_code as p.prov_name for p in province" ng-change="getAmp()" ng-required="true">' +
+                    '<option value=""> </option></select>' +
 
-                        '<label>อำเภอ:   </label><select class="form-control" ng-model="dat.amp" ng-options="a.amp_code as a.amp_name for a in amphoe" ng-change="getTam()" ng-required="true">' +
-                        '<option value=""> </option></select>' +
+                    '<label>อำเภอ:   </label><select class="form-control" ng-model="dat.amp" ng-options="a.amp_code as a.amp_name for a in amphoe" ng-change="getTam()" ng-required="true">' +
+                    '<option value=""> </option></select>' +
 
-                        '<label>ตำบล:   </label><select class="form-control" ng-model="dat.tam" ng-options="t.tam_code as t.tam_name for t in tambon" ng-change="getVill()" ng-required="true">' +
-                        '<option value=""> </option></select>' +
+                    '<label>ตำบล:   </label><select class="form-control" ng-model="dat.tam" ng-options="t.tam_code as t.tam_name for t in tambon" ng-change="getVill()" ng-required="true">' +
+                    '<option value=""> </option></select>' +
 
-                        '<label>หมู่บ้าน:    </label><select class="form-control" ng-model="dat.vill" ng-options="v.vill_code as v.vill_name for v in village" ng-required="true">' +
-                        '<option value=""> </option></select>' +
+                    '<label>หมู่บ้าน:    </label><select class="form-control" ng-model="dat.vill" ng-options="v.vill_code as v.vill_name for v in village" ng-required="true">' +
+                    '<option value=""> </option></select>' +
 
-                        '<div class="form-group"><label><strong>วันรายงาน:</strong> </label><input type="date" class="form-control" ng-model= dat.date_sick ng-required="true" /></div>' +
-                        '</div>' +
-                        '<button class="btn btn-success"type="submit" ng-click="insertMarker(); removeMarker(' + id + ')"><i class="icon-plus-sign icon-white"></i> เพิ่ม</button><span>  </span>' +
-                        '<button class="btn btn-danger" type="submit" ng-click="removeMarker(' + id + ')"><i class="icon-minus-sign icon-white"></i> ยกเลิก</button></form>',
+                    '<div class="form-group"><label><strong>วันรายงาน:</strong> </label><input type="date" class="form-control" ng-model= dat.date_sick ng-required="true" /></div>' +
+                    '</div>' +
+                    '<button class="btn btn-success"type="submit" ng-click="insertMarker(); removeMarker(' + id + ')"><i class="icon-plus-sign icon-white"></i> เพิ่ม</button><span>  </span>' +
+                    '<button class="btn btn-danger" type="submit" ng-click="removeMarker(' + id + ')"><i class="icon-minus-sign icon-white"></i> ยกเลิก</button></form>',
                     focus: true,
                     draggable: true
                 });
-                console.log(id);
+                //console.log(id);
                 id++;
                 $scope.dat = { lat: leafEvent.latlng.lat, lng: leafEvent.latlng.lng };
             }
@@ -218,446 +304,392 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         };
 
         // get everything
-        $scope.getProv = function() {
+        $scope.getProv = function () {
             placeService.getProv()
-                .then(function(response) {
+                .then(function (response) {
                     $scope.province = response.data;
                 })
         };
         $scope.getProv();
 
-        $scope.getAmp = function() {
+        $scope.getAmp = function () {
             placeService.getAmp($scope.dat.prov)
-                .then(function(response) {
+                .then(function (response) {
                     $scope.amphoe = response.data;
                     $scope.tambon = [];
                     $scope.village = [];
                 })
         };
 
-        $scope.getTam = function() {
+        $scope.getTam = function () {
             placeService.getTam($scope.dat.amp)
-                .then(function(response) {
+                .then(function (response) {
                     $scope.tambon = response.data;
                     $scope.village = [];
                 })
         };
 
-        $scope.getVill = function() {
+        $scope.getVill = function () {
             placeService.getVill($scope.dat.tam)
-                .then(function(response) {
+                .then(function (response) {
                     $scope.village = response.data;
                 })
         };
 
         // marker of everything 
-        $scope.addMarkers = function() {
+        $scope.addMarkers = function () {
             $scope.addPoint = true;
         };
 
-        $scope.removeMarker = function(item) {
+        $scope.removeMarker = function (item) {
             var latSearch = item;
             var foundItem = $filter('filter')($scope.markers, { id: latSearch }, true)[0];
             var index = $scope.markers.indexOf(foundItem);
             $scope.markers.splice(index, 1);
         };
 
-        $scope.removeMarkers = function() {
+        $scope.removeMarkers = function () {
             $scope.markers = new Array();
             $scope.addPoint = false;
         };
 
         // insert data 
-        $scope.insertMarker = function() {
+        $scope.insertMarker = function () {
 
             var link = 'http://cgi.uru.ac.th/garbage/case_insert.php';
             //$http.post(link, {username : $scope.data.farmer_fname})
             $http.post(link, $scope.dat)
-                .then(function(res) {
+                .then(function (res) {
                     $scope.response = res.data;
-                    console.log(res.data);
+                    //console.log(res.data);
 
                     // refesh layer
-                    $timeout(function() {
+                    $timeout(function () {
                         //$scope.layers.overlays.v_dengue_point.doRefresh = true;
                         $scope.getJson();
-                        console.log('refreshed');
+                        //console.log('refreshed');
                     }, 400);
                 });
         };
 
         //refesh
-        $scope.reload = function() {
+        $scope.reload = function () {
             location.reload();
         };
     })
 
-.controller("chartController", function($scope, $http, placeService,
-    leafletData, chartService, $timeout) {
-    $scope.title = 'chart';
+    .controller("formCtrl", function ($scope, $http, $window, $timeout, garbageService, loginService) {
+        $scope.title = 'form';
 
-    // select address
-    $scope.dat = {
-        prov: '',
-        amp: '',
-        tam: '',
-        vill: ''
-    };
+        //session
+        $http.get("http://cgi.uru.ac.th/garbage/gb_session.php")
+            .then(function (res) {
+                $scope.session = res.data.data;
+                $scope.access_token = res.data.data[0].access_token;
 
-    // get everything
-    $scope.getProv = function() {
-        placeService.getProv()
-            .then(function(response) {
-                $scope.province = response.data;
-            })
-    };
-    $scope.getProv();
-
-    $scope.getAmp = function() {
-        placeService.getAmp($scope.dat.prov)
-            .then(function(response) {
-                $scope.amphoe = response.data;
-                $scope.tambon = [];
-                $scope.village = [];
-            })
-
-    };
-
-    $scope.getTam = function() {
-        placeService.getTam($scope.dat.amp)
-            .then(function(response) {
-                $scope.tambon = response.data;
-                $scope.village = [];
-            })
-
-    };
-
-    $scope.getVill = function() {
-        placeService.getVill($scope.dat.tam)
-            .then(function(response) {
-                $scope.village = response.data;
-            })
-
-    };
-
-    // get chart
-    $scope.getChartProv = function() {
-        $timeout(function() { $scope.loadCaseProv('province', $scope.dat.prov); }, 400);
-        $scope.lineOptionA = {};
-        $scope.lineOptionT = {};
-        $scope.lineOptionV = {};
-
-    };
-    $scope.getChartAmp = function() {
-        $timeout(function() { $scope.loadCaseProv('amphoe', $scope.dat.amp); }, 400);
-        $scope.lineOptionT = {};
-        $scope.lineOptionV = {};
-
-    };
-    $scope.getChartTam = function() {
-        $timeout(function() { $scope.loadCaseProv('tambon', $scope.dat.tam); }, 400);
-        $scope.lineOptionV = {};
-
-    };
-    $scope.getChartVill = function() {
-        $timeout(function() { $scope.loadCaseProv('village', $scope.dat.vill); }, 400);
-    };
-
-
-    $scope.reload = function() {
-        location.reload();
-    };
-
-    angular.extend($scope, {
-        japan: {
-            lat: 17,
-            lng: 100,
-            zoom: 7
-        },
-        defaults: {
-            scrollWheelZoom: false
-        }
-    });
-
-    $scope.centerJSON = function() {
-        leafletData.getMap().then(function(map) {
-            var latlngs = [];
-            for (var i in $scope.geojson.data.features[0].geometry.coordinates) {
-                var coord = $scope.geojson.data.features[0].geometry.coordinates[i];
-                for (var j in coord) {
-                    var points = coord[j];
-                    for (var k in points) {
-                        latlngs.push(L.GeoJSON.coordsToLatLng(points[k]));
-                    }
+                if ($scope.access_token == null) {
+                    loginService.pageLocation = "form";
+                    $window.location.href = "#!/login";
                 }
-            }
-            map.fitBounds(latlngs);
-        });
-    };
+            });
 
-    //$timeout(function() {$scope.centerJSON();}, 1400); 
+        $scope.logout = function () {
+            $http.get("http://cgi.uru.ac.th/garbage/gb_session.php?destroy=yes")
+                .then(function (res) {
+                    loginService.pageLocation = "form";
+                    $window.location.href = "#!/login";
+                })
+        };
 
-    // Get the countries geojson data from a JSON
-    $scope.da = function(layer, field, code) {
-        $http.get('http://localhost:8080/geoserver/hms/ows?' +
-                'service=WFS&version=1.0.0' +
-                '&request=GetFeature' +
-                '&typeName=' + layer +
-                '&CQL_FILTER=' + field + '=%27' + code + '%27' +
-                '&outputFormat=application%2Fjson')
-            .then(function(data, status) {
-                angular.extend($scope, {
-                    geojson: {
-                        data: data.data,
-                        style: {
-                            fillColor: "red",
-                            weight: 2,
-                            opacity: 1,
-                            color: 'white',
-                            dashArray: '3',
-                            fillOpacity: 0.7
-                        }
-                    }
+        // get apt location
+        $scope.getApt = function () {
+            garbageService.getApt()
+                .then(function (res) {
+                    $scope.apts = res.data;
+                    //console.log(response.data);
+                    //$scope.tam = [];
+                })
+        };
+        $scope.getApt();
+
+        var d = new Date();
+        var month = new Array();
+        var m = month[d.getMonth()];
+        //console.log(d.getFullYear());
+
+        $scope.month = m;
+        $scope.year = d.getFullYear();
+        //$scope.month = moment().format('MMMM');
+
+        //define initial
+        $scope.initial = {
+            apt_name: '',
+            month: '',
+            year: '',
+            general: '',
+            organic: '',
+            recycle: '',
+            hazard: '',
+            electronic: '',
+            dispose: '',
+            cost: '',
+            infect: '',
+            infectClear: '',
+            indust: '',
+            industClear: '',
+            collectPoint: '',
+            remark: ''
+        };
+
+        //console.log($scope.gb.general+$scope.gb.organic+$scope.gb.recycle+$scope.gb.hazard+$scope.gb.electronic);
+        // $scope.gb.gbsum = gsum;
+        //console.log($scope.gb.general);
+
+        $scope.insertGarbage = function () {
+            var link = 'http://cgi.uru.ac.th/garbage/gb_insert.php';
+            //$http.post(link, {username : $scope.data.farmer_fname})
+            $http.post(link, $scope.gb)
+                .then(function (res) {
+                    $scope.response = res.data;
+                    //console.log(res.data);
+                    //console.log($scope.gb.gbsum);
+
                 });
+
+            $timeout(function () {
+                $scope.gb = angular.copy($scope.initial);
+            }, 400);
+
+        };
+
+        $scope.cancelGarbage = function () {
+            $scope.gb = angular.copy($scope.initial);
+        };
+
+        //refesh page
+        $scope.reload = function () {
+            location.reload();
+        };
+
+    })
+
+    .controller('reportCtrl', function ($scope, $http, $window, garbageService, loginService) {
+        $scope.title = 'report';
+
+        //session
+        $http.get("http://cgi.uru.ac.th/garbage/gb_session.php")
+            .then(function (res) {
+                $scope.session = res.data.data;
+                $scope.access_token = res.data.data[0].access_token;
+
+                if ($scope.access_token == null) {
+                    loginService.pageLocation = "report";
+                    $window.location.href = "#!/login";
+                }
             });
 
-        $timeout(function() {
-            $scope.centerJSON();
-            console.log($scope.geojson);
-        }, 1400);
+        $scope.logout = function () {
+            $http.get("http://cgi.uru.ac.th/garbage/gb_session.php?destroy=yes")
+                .then(function (res) {
+                    loginService.pageLocation = "report";
+                    $window.location.href = "#!/login";
+                })
+        };
 
-        // $scope.centerJSON();
-    };
+        $scope.loadGbPoint = function () {
+            garbageService.loadGbPoint()
+                //$http.get('http://localhost/hms-api/index.php/denguepoint')
+                .then(function (res) {
+                    $scope.dengues = res.data;
+                    $scope.countRec = res.data.length;
+                    //console.log(response.data);
+                })
+        };
+        $scope.loadGbPoint();
 
-    //var caseProv = [];
-    $scope.loadCaseProv = function(place, code) {
-        var caseProv = [];
-        chartService.getCase(place, code)
-            .then(function(data) {
+        $scope.delete = function (item) {
+            //console.log(item);
+            $scope.dengues.splice($scope.dengues.indexOf(item), 1);
 
-                if (place == 'province') {
-                    $scope.provName = data.data[0].prov_name;
-                    //console.log(data.data[0].prov_name);
-                    $scope.da('hms:pro_dhf', 'prov_code', code);
+            var link = 'http://cgi.uru.ac.th/garbage/case_remove.php';
+            $http.post(link, item)
+                .then(function (res) {
+                    $scope.response = res.data;
+                    //delete $scope.data;
+                });
+        };
 
-                } else if (place == 'amphoe') {
-                    $scope.ampName = data.data[0].amp_name;
-                    $scope.da('hms:amp_dhf', 'amp_code', code);
+        //$scope.dat = { lat: '', lng: ''};
+        $scope.goMap = function (lat, lng) {
+            $scope.center = { lat: lat, lng: lng };
+            garbageService.selectedLocation = $scope.center;
+            //console.log(lat + '-' + lng);
+        };
+
+        //refesh page
+        $scope.reload = function () {
+            location.reload();
+        };
+    })
 
 
-                } else if (place == 'tambon') {
-                    $scope.tamName = data.data[0].tam_name;
-                    $scope.da('hms:tam_dhf', 'tam_code', code);
+    .controller('chartCtrl', function ($scope, $http, $window, loginService) {
+        $scope.title = 'chart';
+        //session
+        $http.get("http://cgi.uru.ac.th/garbage/gb_session.php")
+            .then(function (res) {
+                $scope.session = res.data.data;
+                $scope.access_token = res.data.data[0].access_token;
 
-                } else if (place == 'village') {
-                    $scope.villName = data.data[0].vill_name;
-
-                    $scope.da('hms:vill_dhf', 'vill_code', code);
-
+                if ($scope.access_token == null) {
+                    loginService.pageLocation = "chart";
+                    $window.location.href = "#!/login";
                 }
+            });
 
-                for (var prop in data.data[0]) {
-                    for (var i = 49; i <= 59; i++) {
-                        var c = 'case' + i;
-                        if (prop == c) {
-                            if (Number(data.data[0][prop]) > 0) {
-                                caseProv.push((Number(data.data[0][prop])).toFixed(2));
-                                //console.log('ok');
-                            } else {
-                                caseProv.push(0);
-                                //console.log('null')
-                            }
-                        }
+        $scope.logout = function () {
+            $http.get("http://cgi.uru.ac.th/garbage/gb_session.php?destroy=yes")
+                .then(function (res) {
+                    loginService.pageLocation = "chart";
+                    $window.location.href = "#!/login";
+                })
+        };
+
+        $scope.optionBar = {
+            title: {
+                text: 'ปริมาณขยะรายเดือน',
+                subtext: 'กก.'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                data: ['sales', 'purchases']
+            },
+            toolbox: {
+                show: false
+            },
+            calculable: false,
+            xAxis: [{
+                type: 'category',
+                data: ['1?', '2?', '3?', '4?', '5?', '6?', '7?', '8?', '9?', '10?', '11?', '12?']
+            }],
+            yAxis: [{
+                type: 'value'
+            }],
+            series: [{
+                name: 'sales',
+                type: 'bar',
+                data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3],
+                markPoint: {
+                    data: [{
+                        type: 'max',
+                        name: '???'
+                    }, {
+                        type: 'min',
+                        name: '???'
+                    }]
+                },
+                markLine: {
+                    data: [{
+                        type: 'average',
+                        name: '???'
+                    }]
+                }
+            }, {
+                name: 'purchases',
+                type: 'bar',
+                data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
+                markPoint: {
+                    data: [{
+                        name: 'sales',
+                        value: 182.2,
+                        xAxis: 7,
+                        yAxis: 183,
+                    }, {
+                        name: 'purchases',
+                        value: 2.3,
+                        xAxis: 11,
+                        yAxis: 3
+                    }]
+                },
+                markLine: {
+                    data: [{
+                        type: 'average',
+                        name: '???'
+                    }]
+                }
+            }]
+
+        };
+
+        $scope.optionRadar = {
+            title: {
+                text: 'ขยะแต่ละประเภท',
+                subtext: 'กก.'
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'right',
+                y: 'bottom',
+                data: ['ปัจจุบัน', 'เดือนที่ผ่านมา']
+            },
+            toolbox: {
+                show: true,
+                feature: {
+                    restore: {
+                        show: true,
+                        title: "Restore"
+                    },
+                    saveAsImage: {
+                        show: true,
+                        title: "Save Image"
                     }
                 }
+            },
+            polar: [{
+                indicator: [{
+                    text: 'ขยะมูลฝอยทั่วไป',
+                    max: 6000
+                }, {
+                    text: 'ขยะอินทรีย์',
+                    max: 16000
+                }, {
+                    text: 'ขยะรีไซเคิล',
+                    max: 30000
+                }, {
+                    text: 'ขยะอันตราย',
+                    max: 38000
+                }, {
+                    text: 'ขยะอิเล็กทรอนิกส์',
+                    max: 52000
+                }]
+            }],
+            calculable: true,
+            series: [{
+                name: 'Budget vs spending',
+                type: 'radar',
+                data: [{
+                    value: [4300, 10000, 28000, 35000, 50000],
+                    name: 'ปัจจุบัน'
+                }, {
+                    value: [5000, 14000, 28000, 31000, 42000],
+                    name: 'เดือนที่ผ่านมา'
+                }]
+            }]
+        };
 
-                var scopeName = {
-                    title: {
-                        text: '',
-                        subtext: 'จำนวนผู้ป่วย'
-                    },
-                    tooltip: {
-                        trigger: 'axis'
-                    },
-                    legend: {
-                        data: ['จำนวนผู้ป่วย']
-                    },
-                    toolbox: {
-                        show: false,
-                        feature: {
-                            mark: { show: false },
-                            dataView: { show: false, readOnly: false },
-                            magicType: { show: true, type: ['line', 'bar'] },
-                            restore: { show: true },
-                            saveAsImage: { show: true }
-                        }
-                    },
-                    calculable: true,
-                    xAxis: [{
-                        type: 'category',
-                        boundaryGap: false,
-                        data: ['2549', '2550', '2551', '2552', '2553', '2554', '2555', '2556', '2557', '2558', '2559']
-                    }],
-                    yAxis: [{
-                        type: 'value',
-                        axisLabel: {
-                            formatter: '{value} คน'
-                        }
-                    }],
-                    series: [{
-                        name: 'จำนวนผู้ป่วย',
-                        type: 'line',
-                        smooth: true,
-                        data: caseProv,
-                        markPoint: {
-                            data: [
-                                { type: 'max', name: 'max' },
-                                { type: 'min', name: 'min' }
-                            ]
-                        },
-                        markLine: {
-                            data: [
-                                { type: 'average', name: 'mean' }
-                            ]
-                        }
-                    }]
-                };
+        $scope.config = {
+            theme: 'default', //['default','vintage'];
+            dataLoaded: true
+        };
 
-                if (place == 'province') {
-                    $scope.lineOptionP = scopeName;
-                } else if (place == 'amphoe') {
-                    $scope.lineOptionA = scopeName;
-                } else if (place == 'tambon') {
-                    $scope.lineOptionT = scopeName;
-                } else if (place == 'village') {
-                    $scope.lineOptionV = scopeName;
-                }
+        //refesh page
+        $scope.reload = function () {
+            location.reload();
+        };
 
-            })
-    };
-
-    //$scope.loadCaseProv('53');
-
-    $scope.lineOptionP = {};
-    $scope.lineOptionA = {};
-    $scope.lineOptionT = {};
-    $scope.lineOptionV = {};
-
-    // chart
-    $scope.lineConfig = {
-        theme: 'default', //['default','vintage'];
-        dataLoaded: true
-    };
-
-    //$scope.lineOption = echartService.lineOption;
-
-
-    //end chart
-
-})
-
-.controller("formController", function($scope, $http, $timeout) {
-    $scope.title = 'form';
-
-    var d = new Date();
-    var month = new Array();
-    month[0] = "มกราคม";
-    month[1] = "กุมภาพันธ์";
-    month[2] = "มีนาคม";
-    month[3] = "เมษายน";
-    month[4] = "พฤษภาคม";
-    month[5] = "มิถุนายน";
-    month[6] = "กรกฎาคม";
-    month[7] = "สิงหาคม";
-    month[8] = "กันยายน";
-    month[9] = "ตุลาคม";
-    month[10] = "พฤศจิกายน";
-    month[11] = "ธันวาคม";
-    var m = month[d.getMonth()];
-    //console.log(d.getFullYear());
-
-    $scope.month = m;
-    $scope.year = d.getFullYear()+543;
-    //$scope.month = moment().format('MMMM');
-
-    //define initial
-    $scope.initial = {
-        month: '',
-        year: '',
-        general: '',
-        organic: '',
-        recycle: '',
-        hazard: '',
-        electronic: '',
-        dispose: '',
-        cost: '',
-        infect: '',
-        infectClear: '',
-        indust: '',
-        industClear: '',
-        collectPoint: '',
-        remark: ''
-    };
-
-    $scope.insertGarbage = function() {
-
-        var link = 'http://cgi.uru.ac.th/garbage/gb_insert.php';
-        //$http.post(link, {username : $scope.data.farmer_fname})
-        $http.post(link, $scope.gb)
-            .then(function(res) {
-                $scope.response = res.data;
-                console.log(res.data);
-
-            });
-
-        $timeout(function() {
-            $scope.gb = angular.copy($scope.initial);
-        }, 400);
-
-    };    
-    
-    $scope.cancelGarbage = function() {
-        $scope.gb = angular.copy($scope.initial);
-    };
-
-})
-
-.controller('reportController', function($scope, $http, dengueService) {
-    $scope.title = 'report';
-    $scope.loadDenguePoint = function() {
-        dengueService.loadDenguePoint()
-            //$http.get('http://localhost/hms-api/index.php/denguepoint')
-            .then(function(response) {
-                $scope.dengues = response.data;
-                $scope.countRec = response.data.length;
-                //console.log(response.data.length);
-            })
-    };
-    $scope.loadDenguePoint();
-
-    $scope.delete = function(item) {
-        //console.log(item);
-        $scope.dengues.splice($scope.dengues.indexOf(item), 1);
-
-        var link = 'http://cgi.uru.ac.th/garbage/case_remove.php';
-        $http.post(link, item)
-            .then(function(res) {
-                $scope.response = res.data;
-                //delete $scope.data;
-            });
-    };
-
-    $scope.reload = function() {
-        location.reload();
-    };
-    //$scope.dat = { lat: '', lng: ''};
-    $scope.goMap = function(lat, lng) {
-        $scope.dat = { lat: lat, lng: lng };
-        dengueService.selectedLocation = $scope.dat; //console.log(lat+'-'+lng);
-    };
-})
-
-
-.controller('chartCtrl', function(){
-
-});
+    });
