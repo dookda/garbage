@@ -91,6 +91,14 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
             }
         };
 
+        $scope.init = {
+            email: '',
+            fname:'',
+            lname:'',
+            pw1:'',
+            pw2:'',
+            apt_name:''
+        }
 
         // insert data to database
         $scope.register = function () {
@@ -99,11 +107,13 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
             $http.post(link, $scope.reg)
                 .then(function (res) {
                     //console.log(res.data);
-                    $scope.successful = true;
-
+                    $scope.successful = true;                    
                     $timeout(function () {
-                        $window.location.href = "#!/login";
-                    }, 600);
+                        $scope.reg = angular.copy($scope.init);                        
+                    }, 400);
+                    $timeout(function () {
+                        $window.location.href = "#!/login";                        
+                    }, 800);
                 });
         }
     })
@@ -433,13 +443,9 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
             $http.post(link, $scope.dat)
                 .then(function (res) {
                     $scope.response = res.data;
-                    //console.log(res.data);
-
                     // refesh layer
                     $timeout(function () {
-                        //$scope.layers.overlays.v_dengue_point.doRefresh = true;
                         $scope.getJson();
-                        //console.log('refreshed');
                     }, 400);
                 });
         };
@@ -478,8 +484,6 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
             garbageService.getApt()
                 .then(function (res) {
                     $scope.apts = res.data;
-                    //console.log(response.data);
-                    //$scope.tam = [];
                 })
         };
         $scope.getApt();
@@ -512,10 +516,6 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
             collectPoint: '',
             remark: ''
         };
-
-        //console.log($scope.gb.general+$scope.gb.organic+$scope.gb.recycle+$scope.gb.hazard+$scope.gb.electronic);
-        // $scope.gb.gbsum = gsum;
-        //console.log($scope.gb.general);
 
         $scope.insertGarbage = function () {
             var link = 'http://cgi.uru.ac.th/garbage/gb_insert.php';
