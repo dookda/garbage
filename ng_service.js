@@ -2,8 +2,8 @@ angular.module('app.service', [])
 .service('loginService', function($http) {
     return {
         pageLocation: {},
-        getUser: function() {
-            var data = 'http://cgi.uru.ac.th/garbage-api/index.php/users';
+        getUser: function(email) {
+            var data = 'http://cgi.uru.ac.th/garbage-api/index.php/users/'+email;
             return $http.get(data);
         },
     }

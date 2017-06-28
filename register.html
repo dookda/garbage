@@ -8,22 +8,22 @@
         <div class="panel-body">
             <form>
                 <p>email: </br>
-                    <input class="form-control" type="email" ng-model="reg.email" ng-required="true">
+                    <input class="form-control" type="email" ng-model="reg.email" ng-change="getUser()" ng-required="true">
                 </p>
                 <p>ชื่อ: </br>
-                    <input class="form-control" type="text" ng-model="reg.fname" ng-required="true">
+                    <input class="form-control" type="text" ng-model="reg.fname" ng-change="chkVal('fname')" ng-required="true">
                 </p>
                 <p>นามสกุล: </br>
-                    <input class="form-control" type="text" ng-model="reg.lname" ng-required="true">
+                    <input class="form-control" type="text" ng-model="reg.lname" ng-change="chkVal('lname')" ng-required="true">
                 </p>
                 <p>password: </br>
-                    <input class="form-control" type="password" ng-model="reg.pw1" ng-required="true">
+                    <input class="form-control" type="password" ng-model="reg.pw1" ng-change="chkPass()" ng-required="true">
                 </p>
                 <p>password (อีกครั้ง):</br>
-                    <input class="form-control" type="password" ng-model="reg.pw2" ng-change="change()" ng-required="true">
+                    <input class="form-control" type="password" ng-model="reg.pw2" ng-change="chkPass()" ng-required="true">
                 </p>
                 <p>องค์กรปกครองส่วนท้องถิ่น: </br>
-                    <select class="form-control" ng-model="reg.apt_name" ng-options="a.name for a in apts" ng-required="true">
+                    <select class="form-control" ng-model="reg.apt_name" ng-options="a.name for a in apts" ng-change="chkVal('apt_name')" ng-required="true">
                         <option value=""> </option>
                     </select>
                 </p>
@@ -31,7 +31,15 @@
                     <input type="submit" class="btn btn-sm btn-success" ng-click="register()" ng-disabled="bchk">
                 </p>
                 <p>
-                    <span>{{errorMsg}}</span>
+
+
+                    <div ng-show="errEmail"> email นี้ถูกใช้แล้ว</div>
+                    <div ng-show="errFname"> กรุณากรอกชื่อ</div>
+                    <div ng-show="errLname"> กรุณากรอกนามสกุล</div>
+                    <div ng-show="errPw"> password ไม่เหมือนกัน</div>
+                    <div ng-show="errAname"> กรุณาเลือกสถานที่</div>
+                    <div ng-show="successful"> ลงทะเบียนสำเร็จ กรุณา login เพื่อใช้งาน</div>
+                    <!--<span>{{errEmail}}</span></br><span>{{errFname}}</span></br><span>{{errLname}}</span></br><span>{{errPw}}</span></br><span>{{errAname}}</span></br>{{successful}}-->
                 </p>
             </form>
         </div>

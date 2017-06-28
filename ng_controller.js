@@ -1,29 +1,96 @@
 angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
 
-    .controller("registerCtrl", function ($scope, $http, garbageService) {
+    .controller("registerCtrl", function ($scope, $http, $timeout, $window, loginService, garbageService) {
 
         $scope.title = 'register';
+        $scope.chkMail = false;
+        $scope.chkPw = false;
+        $scope.chkFname = false;
+        $scope.chkLname = false;
+        $scope.chkAptname = false;
+        $scope.bchk = true;
+
+        //check email
+        $scope.getUser = function () {
+            loginService.getUser($scope.reg.email)
+                .then(function (res) {
+                    if (res.data[0].count >= 1) {
+                        $scope.errEmail = true;
+                        $scope.chkMail = false;
+                        $scope.chkButton();
+                    } else {
+                        $scope.errEmail = false;
+                        $scope.chkMail = true;
+                        $scope.chkButton();
+                    }
+                })
+        };
+
+        // check name surname and address
+        $scope.chkVal = function (inputDat) {
+            if (inputDat == 'fname') {
+                if ($scope.reg.fname == null) {
+                    $scope.errFname = true;
+                    $scope.chkFname = false;
+                    $scope.chkButton();
+                } else {
+                    $scope.errFname = false
+                    $scope.chkFname = true;
+                    $scope.chkButton();
+                }
+            } else if (inputDat == 'lname') {
+                if ($scope.reg.lname == null) {
+                    $scope.errLname = true;
+                    $scope.chkLname = false;
+                    $scope.chkButton();
+                } else {
+                    $scope.errLname = false
+                    $scope.chkLname = true;
+                    $scope.chkButton();
+                }
+            } else if (inputDat == 'apt_name') {
+                if ($scope.reg.apt_name == null) {
+                    $scope.errAname = true;
+                    $scope.chkAptname = false;
+                    $scope.chkButton();
+                } else {
+                    $scope.errAname = false
+                    $scope.chkAptname = true;
+                    $scope.chkButton();
+                }
+            }
+        };
+
         // get apt location
         $scope.getApt = function () {
             garbageService.getApt()
                 .then(function (res) {
                     $scope.apts = res.data;
-                    //console.log(response.data);
-                    //$scope.tam = [];
                 })
         };
         $scope.getApt();
 
         // check password
-        $scope.bchk = true;
-        $scope.change = function () {
-            $scope.errorMsg = "กรุณากรอก password ให้เหมือนกัน";
+        $scope.chkPass = function () {
             if ($scope.reg.pw1 == $scope.reg.pw2) {
-                $scope.bchk = false;
-                $scope.errorMsg = null;
-                //console.log($scope.bchk);
+                $scope.errPw = false;
+                $scope.chkPw = true;
+                $scope.chkButton();
+            } else {
+                $scope.errPw = true;
+                $scope.chkPw = false;
+                $scope.chkButton();
             }
-        }
+        };
+
+        $scope.chkButton = function () {
+            if ($scope.chkPw == true & $scope.chkMail == true & $scope.chkFname == true & $scope.chkLname == true & $scope.chkAptname == true) {
+                $scope.bchk = false;
+            } else {
+                $scope.bchk = true;
+            }
+        };
+
 
         // insert data to database
         $scope.register = function () {
@@ -31,7 +98,12 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
             var link = 'http://cgi.uru.ac.th/garbage/gb_usr_insert.php';
             $http.post(link, $scope.reg)
                 .then(function (res) {
-                    console.log(res.data);
+                    //console.log(res.data);
+                    $scope.successful = true;
+
+                    $timeout(function () {
+                        $window.location.href = "#!/login";
+                    }, 600);
                 });
         }
     })
@@ -451,15 +523,10 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
             $http.post(link, $scope.gb)
                 .then(function (res) {
                     $scope.response = res.data;
-                    //console.log(res.data);
-                    //console.log($scope.gb.gbsum);
-
                 });
-
             $timeout(function () {
                 $scope.gb = angular.copy($scope.initial);
             }, 400);
-
         };
 
         $scope.cancelGarbage = function () {
