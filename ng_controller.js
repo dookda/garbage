@@ -80,7 +80,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
                 $scope.errPw = true;
                 $scope.chkPw = false;
                 $scope.chkButton();
-            }
+            }                        
         };
 
         $scope.chkButton = function () {
@@ -128,9 +128,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
             var link = 'http://cgi.uru.ac.th/garbage/gb_login_action.php';
             $http.post(link, $scope.usr)
                 .then(function (res) {
-
                     if (res.data.data[0].status == 'true') {
-
                         if ($scope.pageLocation == 'report') {
                             $window.location.href = "#!/report";
                         } else if ($scope.pageLocation == 'form') {
@@ -140,7 +138,6 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
                         } else {
                             $window.location.href = "#!/form";
                         }
-
                     } else {
                         $scope.errorMsg = 'กรุณาลองใหม่อีกครั้ง';
                     }

@@ -1,4 +1,8 @@
 <?php
+    header("Access-Control-Allow-Origin: *");
+    header("content-type:text/javascript;charset=utf-8");
+    header("Content-Type: application/json; charset=utf-8", true, 200);
+    
     $postdata = file_get_contents("php://input");
     $request = json_decode($postdata);
     $email = $request->email;
@@ -12,11 +16,7 @@
     $sql = "select user_email, user_password from users where user_email='$email' and user_password='$password'";
     
 	$objQuery = pg_query($sql);
-	$objResult = pg_fetch_array($objQuery);
-    
-    header("Access-Control-Allow-Origin: *");
-    header("content-type:text/javascript;charset=utf-8");
-    header("Content-Type: application/json; charset=utf-8", true, 200);
+	$objResult = pg_fetch_array($objQuery);  
 
 	if(!$objResult){		
 		$admin[] = array('status' => 'no');
