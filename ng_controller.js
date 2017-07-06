@@ -1,3 +1,5 @@
+var url = 'http://localhost';
+//var url = 'http://cgi.uru.ac.th';
 angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
 
     .controller("registerCtrl", function ($scope, $http, $timeout, $window, loginService, garbageService) {
@@ -68,7 +70,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
                     $scope.apts = res.data;
                 })
         };
-        $scope.getApt();
+        //$scope.getApt();
 
         // check password
         $scope.chkPass = function () {
@@ -80,7 +82,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
                 $scope.errPw = true;
                 $scope.chkPw = false;
                 $scope.chkButton();
-            }                        
+            }
         };
 
         $scope.chkButton = function () {
@@ -93,26 +95,26 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
 
         $scope.init = {
             email: '',
-            fname:'',
-            lname:'',
-            pw1:'',
-            pw2:'',
-            apt_name:''
+            fname: '',
+            lname: '',
+            pw1: '',
+            pw2: '',
+            apt_name: ''
         }
 
         // insert data to database
         $scope.register = function () {
             console.log($scope.reg.apt_name.name);
-            var link = 'http://cgi.uru.ac.th/garbage/gb_usr_insert.php';
+            var link = url + '/garbage/gb_usr_insert.php';
             $http.post(link, $scope.reg)
                 .then(function (res) {
                     //console.log(res.data);
-                    $scope.successful = true;                    
+                    $scope.successful = true;
                     $timeout(function () {
-                        $scope.reg = angular.copy($scope.init);                        
+                        $scope.reg = angular.copy($scope.init);
                     }, 400);
                     $timeout(function () {
-                        $window.location.href = "#!/login";                        
+                        $window.location.href = "#!/login";
                     }, 800);
                 });
         }
@@ -125,7 +127,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
 
         //login
         $scope.login2 = function () {
-            var link = 'http://cgi.uru.ac.th/garbage/gb_login_action.php';
+            var link = url + '/garbage/gb_login_action.php';
             $http.post(link, $scope.usr)
                 .then(function (res) {
                     if (res.data.data[0].status == 'true') {
@@ -153,19 +155,22 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         $scope.pageLocation = loginService.pageLocation;
 
         //session
-        $http.get("http://cgi.uru.ac.th/garbage/gb_session.php")
+        var linkIn = url + '/garbage/gb_session.php';
+        $http.get(linkIn)
             .then(function (res) {
                 $scope.session = res.data.data;
                 $scope.access_token = res.data.data[0].access_token;
-
+                console.log(res.data.data[0].access_token);
                 if ($scope.access_token == null) {
                     loginService.pageLocation = "map";
                     $window.location.href = "#!/login";
                 }
             });
 
+
         $scope.logout = function () {
-            $http.get("http://cgi.uru.ac.th/garbage/gb_session.php?destroy=yes")
+            var linkOut = url + '/garbage/gb_session.php?destroy=yes';
+            $http.get(linkOut)
                 .then(function (res) {
                     loginService.pageLocation = "map";
                     $window.location.href = "#!/login";
@@ -213,7 +218,6 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
                             type: 'Aerial'
                         }
                     },
-
                     bingAerialWithLabels: {
                         name: 'Bing Aerial With Labels',
                         type: 'bing',
@@ -228,7 +232,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
                         name: 'ขอบเขตจังหวัด',
                         type: 'wms',
                         visible: true,
-                        url: 'http://cgi.uru.ac.th/gs-gb/wms?',
+                        url: url + '/gs-gb/wms?',
                         layerParams: {
                             layers: 'nan:province',
                             format: 'image/png',
@@ -240,7 +244,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
                         name: 'ขอบเขตอำเภอ',
                         type: 'wms',
                         visible: true,
-                        url: 'http://cgi.uru.ac.th/gs-gb/wms?',
+                        url: url + '/gs-gb/wms?',
                         layerParams: {
                             layers: 'nan:amphoe',
                             format: 'image/png',
@@ -252,7 +256,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
                         name: 'ขอบเขตตำบล',
                         type: 'wms',
                         visible: true,
-                        url: 'http://cgi.uru.ac.th/gs-gb/wms?',
+                        url: url + '/gs-gb/wms?',
                         layerParams: {
                             layers: 'nan:tambon',
                             format: 'image/png',
@@ -264,7 +268,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
                     village: {
                         name: 'หมู่บ้าน',
                         type: 'wms',
-                        url: 'http://cgi.uru.ac.th/gs-gb/wms?',
+                        url: url + '/gs-gb/wms?',
                         layerParams: {
                             layers: 'nan:village',
                             format: 'image/png',
@@ -435,7 +439,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         // insert data 
         $scope.insertMarker = function () {
 
-            var link = 'http://cgi.uru.ac.th/garbage/case_insert.php';
+            var link = url + '/garbage/case_insert.php';
             //$http.post(link, {username : $scope.data.farmer_fname})
             $http.post(link, $scope.dat)
                 .then(function (res) {
@@ -455,26 +459,6 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
 
     .controller("formCtrl", function ($scope, $http, $window, $timeout, garbageService, loginService) {
         $scope.title = 'form';
-
-        //session
-        $http.get("http://cgi.uru.ac.th/garbage/gb_session.php")
-            .then(function (res) {
-                $scope.session = res.data.data;
-                $scope.access_token = res.data.data[0].access_token;
-
-                if ($scope.access_token == null) {
-                    loginService.pageLocation = "form";
-                    $window.location.href = "#!/login";
-                }
-            });
-
-        $scope.logout = function () {
-            $http.get("http://cgi.uru.ac.th/garbage/gb_session.php?destroy=yes")
-                .then(function (res) {
-                    loginService.pageLocation = "form";
-                    $window.location.href = "#!/login";
-                })
-        };
 
         // get apt location
         $scope.getApt = function () {
@@ -515,7 +499,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         };
 
         $scope.insertGarbage = function () {
-            var link = 'http://cgi.uru.ac.th/garbage/gb_insert.php';
+            var link = url + '/garbage/gb_insert.php';
             //$http.post(link, {username : $scope.data.farmer_fname})
             $http.post(link, $scope.gb)
                 .then(function (res) {
@@ -540,26 +524,6 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
     .controller('reportCtrl', function ($scope, $http, $window, garbageService, loginService) {
         $scope.title = 'report';
 
-        //session
-        $http.get("http://cgi.uru.ac.th/garbage/gb_session.php")
-            .then(function (res) {
-                $scope.session = res.data.data;
-                $scope.access_token = res.data.data[0].access_token;
-
-                if ($scope.access_token == null) {
-                    loginService.pageLocation = "report";
-                    $window.location.href = "#!/login";
-                }
-            });
-
-        $scope.logout = function () {
-            $http.get("http://cgi.uru.ac.th/garbage/gb_session.php?destroy=yes")
-                .then(function (res) {
-                    loginService.pageLocation = "report";
-                    $window.location.href = "#!/login";
-                })
-        };
-
         $scope.loadGbPoint = function () {
             garbageService.loadGbPoint()
                 //$http.get('http://localhost/hms-api/index.php/denguepoint')
@@ -575,7 +539,7 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
             //console.log(item);
             $scope.dengues.splice($scope.dengues.indexOf(item), 1);
 
-            var link = 'http://cgi.uru.ac.th/garbage/case_remove.php';
+            var link = url + '/garbage/case_remove.php';
             $http.post(link, item)
                 .then(function (res) {
                     $scope.response = res.data;
@@ -596,28 +560,85 @@ angular.module('app.controller', ['ui-leaflet', 'ng-echarts'])
         };
     })
 
+    .controller('calCtrl', function ($scope) {
+        $scope.title = 'calculate';
+
+        
+
+        $scope.cal = function () {
+
+            console.log($scope.ctype);
+
+            if ($scope.ctype == 'a') {
+                $scope.exp = {
+                    organic: 0.19,
+                    general: 0.5,
+                    recycle: 0.3,
+                    hazard: 0.01
+                }
+            } else if ($scope.ctype == 'b') {
+                $scope.exp = {
+                    general: 0.65,
+                    organic: 0.02,
+                    recycle: 0.29,
+                    hazard: 0.04
+                }
+            } else if ($scope.ctype == 'c') {
+                $scope.exp = {
+                    general: 0.61,
+                    organic: 0.03,
+                    recycle: 0.32,
+                    hazard: 0.04
+                }
+            } else if ($scope.ctype == 'd') {
+                $scope.exp = {
+                    general: 0.60,
+                    organic: 0.03,
+                    recycle: 0.34,
+                    hazard: 0.03
+                }
+            } else if ($scope.ctype == 'e') {
+                $scope.exp = {
+                    general: 0.64,
+                    organic: 0.03,
+                    recycle: 0.31,
+                    hazard: 0.03
+                }
+            } else if ($scope.ctype == 'f') {
+                $scope.exp = {
+                    general: 0.64,
+                    organic: 0.02,
+                    recycle: 0.30,
+                    hazard: 0.03
+                }
+            } else if ($scope.ctype == 'g') {
+                $scope.exp = {
+                    general: 0.65,
+                    organic: 0.02,
+                    recycle: 0.29,
+                    hazard: 0.03
+                }
+            } else if ($scope.ctype == 'h') {
+                $scope.exp = {
+                    general: 0.64,
+                    organic: 0.03,
+                    recycle: 0.30,
+                    hazard: 0.04
+                }
+            } else if ($scope.ctype == 'i') {
+                $scope.exp = {
+                    general: 0.64,
+                    organic: 0.03,
+                    recycle: 0.30,
+                    hazard: 0.03
+                }
+            }
+        }
+
+    })
 
     .controller('chartCtrl', function ($scope, $http, $window, loginService) {
         $scope.title = 'chart';
-        //session
-        $http.get("http://cgi.uru.ac.th/garbage/gb_session.php")
-            .then(function (res) {
-                $scope.session = res.data.data;
-                $scope.access_token = res.data.data[0].access_token;
-
-                if ($scope.access_token == null) {
-                    loginService.pageLocation = "chart";
-                    $window.location.href = "#!/login";
-                }
-            });
-
-        $scope.logout = function () {
-            $http.get("http://cgi.uru.ac.th/garbage/gb_session.php?destroy=yes")
-                .then(function (res) {
-                    loginService.pageLocation = "chart";
-                    $window.location.href = "#!/login";
-                })
-        };
 
         $scope.optionBar = {
             title: {

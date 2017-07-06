@@ -29,49 +29,12 @@ function chkActivelandcwr($apt_name, $gbmonth, $gbyear){
     pg_close($dbconn);
 }
 
-function cwr($apt_name, $gbmonth, $gbyear)
-{   
-    $chkExist = chkActivelandcwr($apt_name, $gbmonth, $gbyear);
-    //print $chkExist."</br>";
-
-    //$pacelSql = pg_query("SELECT alrcode, active_type, date_part('week'::text, active_date) AS wk FROM active_land where alrcode='$alrCode'");
-
-    
-    if($chkExist==0){
-
-        // while ($pacelRow = pg_fetch_assoc($pacelSql)) {           
-            
-        //     pg_query("INSERT INTO active_land_cwr (alrcode, crop_type, active_wk) VALUES ('".$pacelRow['alrcode']."','".$pacelRow['active_type']."','".$pacelRow['wk']."')");
-
-        //     $wkNum = $pacelRow['wk'];
-        //     $cropType = $pacelRow['active_type'];
-        // }
-        print "noooooo not exist </br>";
-
-    }else{
-        // while ($pacelRow = pg_fetch_assoc($pacelSql)) {
-
-        //     pg_query("UPDATE active_land_cwr SET crop_type='".$pacelRow['active_type']."',active_wk='".$pacelRow['wk']."' WHERE alrcode='$alrCode'");
-
-        //     $wkNum = $pacelRow['wk'];
-        //     $cropType = $pacelRow['active_type'];
-        // }
-        print "yess exist </br>";
-    }
-    
-    insertCwr($alrCode, $wkNum, $cropType);
-      
-}
-
-
 // Connect database
 require('../lib/conn.php');
 $dbconn = pg_connect($conn_gb) or die('Could not connect'); 
 
 $postdata = file_get_contents("php://input");
-if (isset($postdata)) {
-    
-
+if (isset($postdata)) {   
 
     $request = json_decode($postdata);
     $apt_name = $request->apt_name;
@@ -93,7 +56,6 @@ if (isset($postdata)) {
     $gbremark = $request->remark;
     $token = mt_rand(100000, 999999);
 
-
     cwr($apt_name, $gbmonth, $gbyear);
 
     if($gbremark==null){
@@ -102,9 +64,7 @@ if (isset($postdata)) {
         $sql = "INSERT INTO gb_data (gbmonth, gbyear, gbsum, gbgeneral, gborganic, gbrecycle, gbhazard,  gbelect, gbdispose, gbcost, gbinfect, gbinfectclr, gbindust, gbindustclr, gbcollect, gbremark, token) VALUES ('$gbmonth',$gbyear,$gbsum,$gbgeneral,$gborganic,$gbrecycle,$gbhazard,$gbelect,$gbdispose,$gbcost,$gbinfect,$gbinfectclr,$gbindust,$gbindustclr,$gbcollect,'$gbremark',$token)";
     }
 
-    pg_query($sql);
-        
-
+    pg_query($sql);      
 
     echo 'ส่งข้อมูลสำเร็จ';
     

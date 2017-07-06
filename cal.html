@@ -1,0 +1,78 @@
+<section id='tools'>
+    <ul class='breadcrumb' id='breadcrumb'>
+        <li class='title'>{{title}}</li>
+    </ul>
+
+    <div id='toolbar'>
+        <div class='btn-group'>
+            <a class='btn btn-primary ' ng-click='logout()'>
+                <i class="icon-plus-sign icon-white"></i> Logout
+            </a>
+            <a class='btn' ng-click="reload()" title='Reload'>
+                <i class='icon-refresh'></i> Refresh
+            </a>
+        </div>
+    </div>
+
+</section>
+<!-- Content -->
+<div id='content'>
+
+    <div class='panel panel-default'>
+        <div class='panel-heading'>
+            <i class='icon-edit icon-large'></i>
+        </div>
+
+        <div class='panel-body'>
+
+            <div class='form-group'>
+                <legend>คำนวณปริมาณขยะแต่ละประเภท</legend>
+                <div class='form-group row'>
+                    <div class='col-lg-4'>
+                        <label class='control-label'>ระบบุปริมาณขยะมูลฝอย (หน่วย: กิโลกรัม)</label>
+                        <input class='form-control' ng-model='gb.total' placeholder='กิโลกรัม' type='number' ng-pattern="/^[0-9]+(\.[0-9]{1,2})?$/" ng-change="cal()" ng-required="true">
+                    </div>
+                    <div class='col-lg-4'>
+                        <label>เลือกวิธีการคำนวณปริมาณขยะแต่ละประเภท</label> <br>                     
+                            <input type="radio" ng-model='ctype' value="a" ng-change="cal()"> จากผู้เชี่ยวชาญ (อบต.ป่าคา)<br>
+                            <input type="radio" ng-model='ctype' value="b" ng-change="cal()"> เชียงใหม่ เชียงราย แม่ฮ่องสอน ลำพูน<br>
+                            <input type="radio" ng-model='ctype' value="c" ng-change="cal()"> ลำปาง พะเยา แพร่ สุโขทัย<br>
+                            <input type="radio" ng-model='ctype' value="d" ng-change="cal()"> พิษณุโลก น่าน อุตรดิตถ์ พิจิตร<br>
+                            <input type="radio" ng-model='ctype' value="e" ng-change="cal()"> ประเทศ<br>                            
+                    </div>
+
+                    <div class='col-lg-4'>
+                        <label>  </label><br>
+                            <input type="radio" ng-model='ctype' value="f" ng-change="cal()"> ภาคเหนือ<br>
+                            <input type="radio" ng-model='ctype' value="g" ng-change="cal()"> เทศบาลนคร<br>
+                            <input type="radio" ng-model='ctype' value="h" ng-change="cal()"> เทศบาลเมือง<br>
+                            <input type="radio" ng-model='ctype' value="i" ng-change="cal()"> เทศบาลตำบล<br>                                    
+                    </div>                     
+                </div>
+                
+                <legend>ผลการคำนวณปริมาณขยะแต่ละประเภท</legend>
+                <div class="form-group row">
+                    <div class='col-lg-6'>
+                        <label class='control-label'>ขยะมูลฝอยทั่วไป (กิโลกรัม)</label>
+                        <input class='form-control' ng-model='gb.general' type='number' step="0.01" ng-value="gb.total * exp.general" disabled>
+                    </div>
+                    <div class='col-lg-6'>
+                        <label class='control-label'>ขยะอินทรีย์ (กิโลกรัม)</label>
+                        <input class='form-control' ng-model='gb.organic' type='number' step="0.01" ng-value="gb.total*exp.organic" disabled>
+                    </div>
+                </div>
+                <div class="form-group row">                    
+                    <div class='col-lg-6'>
+                        <label class='control-label'>ขยะรีไซเคิล (กิโลกรัม)</label>
+                        <input class='form-control' ng-model='gb.recycle' type='number' step="0.01" ng-value="gb.total*exp.recycle" disabled>
+                    </div>
+                    <div class='col-lg-6'>
+                        <label class='control-label'>ขยะอันตราย (กิโลกรัม)</label>
+                        <input class='form-control' ng-model='gb.hazard' type='number' step="0.01" ng-value="gb.total*exp.hazard" disabled>
+                    </div>
+                </div>
+            </div>
+            <p>ที่มา: กรมควบคุมมลพิษ, 2550. โครงการสำรวจและวิเคราะห์องค์ประกอบขยะมูลฝอยชุมชนของเทศบาลทั่วประเทศ. สำนักจัดการกากของเสียและสารอันตราย: กรุงเทพฯ
+        </div>
+
+    </div>
